@@ -50,29 +50,20 @@ public class MainMenu
         break;
         
       case 'C':
-      case 'c':
-        //-----------------------------------------------------------
-        // This echoes all the information of the projects the user 
-        // has created so far; can be enabled to test the program if 
-        // t is pressed by the user.
-        //-----------------------------------------------------------
-        /* String test;
-        System.out.println("\n\tPress t to view projects");
-        System.out.print("\tPress any keys to continue: ");
-        test = scan.next();
-        if (test.equalsIgnoreCase("t"))
-        {
-          System.out.print(allData.toString());
-        }*/                                
+      case 'c':                      
         
         allData.setData();
-        System.out.print(allData.toString());
+        //-----------------------------------------------------------
+        // This echoes all the information of the projects the user 
+        // has created so far; can be enabled to test the program.
+        //-----------------------------------------------------------
+        /*System.out.print(allData.toString());*/
         backToMenu();
         break;
         
       case 'V':
       case 'v':
-        EnterVotes.enterVotes();
+        EnterVotes enterVotes = new EnterVotes();
         backToMenu();
         break;
       
@@ -108,7 +99,7 @@ public class MainMenu
   {
     Scanner scan = new Scanner(System.in);
     String option;
-    System.out.print("\n\tPress any key to return to the main menu: ");
+    System.out.print("\n\tPress any key followed by <Enter> to return to the main menu: ");
     option = scan.nextLine(); //--------------------------------
                                // This allows the user to press
                                // return to return to main menu 
