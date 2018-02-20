@@ -82,32 +82,7 @@ public class CreateProject
     noOfMembers = 0;
     memberNameList = null;
   }
-  
-  //-------------------------------------------------------------------
-  // This is a copy constructor that can be used to create a separate,
-  // independent object with the same data as the argument object.
-  // ------------------------------------------------------------------
-  public CreateProject(CreateProject project)
-  {
-    projectName = project.projectName;
-    noOfMembers = project.noOfMembers;
-    memberNameList = new String [project.noOfMembers];
-    for (int n = 0; n < memberNameList.length; n++)
-    {
-      memberNameList[n] = project.memberNameList[n];
-    }
-  }
 
-  //------------------------------------------------------------------
-  // This setProjectName mutator method is included to allow users to 
-  // set the name of the project.
-  // -----------------------------------------------------------------
-  public void setProjectName()
-  {
-    Scanner scan = new Scanner(System.in);
-    String newProjectName = scan.nextLine();
-    projectName = newProjectName;
-  }
   
   public String getProjectName()
   {

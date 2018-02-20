@@ -50,14 +50,23 @@ public class MainMenu
         break;
         
       case 'C':
-      case 'c':                      
-        
-        allData.setData();
+      case 'c':
         //-----------------------------------------------------------
         // This echoes all the information of the projects the user 
-        // has created so far; can be enabled to test the program.
+        // has created so far; can be enabled to test the program if 
+        // t is pressed by the user.
         //-----------------------------------------------------------
-        /*System.out.print(allData.toString());*/
+        /* String test;
+        System.out.println("\n\tPress t to view projects");
+        System.out.print("\tPress any keys to continue: ");
+        test = scan.next();
+        if (test.equalsIgnoreCase("t"))
+        {
+          System.out.print(allData.toString());
+        }*/                                
+        
+        allData.setData();
+        System.out.print(allData.toString());
         backToMenu();
         break;
         
