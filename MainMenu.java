@@ -56,7 +56,7 @@ public class MainMenu
       case 'C':
       case 'c':                      
         
-        allData.addProject();
+        allData.setData();
         //-----------------------------------------------------------
         // This echoes all the information of the projects the user 
         // has created so far; can be enabled to test the program.
@@ -67,7 +67,7 @@ public class MainMenu
         
       case 'V':
       case 'v':
-        allData.addVotes();
+        EnterVotes enterVotes = new EnterVotes();
         backToMenu();
         break;
       
