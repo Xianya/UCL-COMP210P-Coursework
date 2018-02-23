@@ -2,13 +2,12 @@ import java.util.Scanner;
 
 public class EnterVotes
 {
-  private CreateProject projectWanted;
   private int[][] votesLists;
     
   public EnterVotes()
   {
     Scanner scan = new Scanner(System.in);
-    projectWanted = new CreateProject(0);
+    CreateProject projectWanted = new CreateProject(0);
       
     System.out.print("\n\tEnter the project name: ");
     projectWanted.setProjectName();
@@ -54,7 +53,7 @@ public class EnterVotes
     for (int a = 0; a < countMember; a++)
     {
       System.out.println("\tEnter " + projectWanted.getMemberName(a) 
-                         + "’s votes, points must add up to 100: ");
+                         + "’s votes, points must add up to 100: \n");
       
       do 
       {
@@ -62,25 +61,26 @@ public class EnterVotes
         {
           if (b != a)
           {
-            System.out.print("\n\t\tEnter " + projectWanted.getMemberName(a) 
+            System.out.print("\t\tEnter " + projectWanted.getMemberName(a) 
                            +"’s points for " + projectWanted.getMemberName(b) + ":\t");
             votesLists[a][b] = scan.nextInt();
           }   
         }
         
-        if (!votesEqualAHundred(votesLists[a]))
+        if (!votesValid(votesLists[a]))
         {
-          System.out.print("\tVotes do not add up to 100.\n"+
-                           "\tEnter Again.");
+          System.out.println("\tVotes do not add up to 100.\n"+
+                           "\n\tEnter Again:");
         }
-      } while (!votesEqualAHundred(votesLists[a]));  
+      } while (!votesValid(votesLists[a]));  
       
       System.out.println();
     }
     
+    
   } 
  
-  private boolean votesEqualAHundred(int[] inputList)
+  private boolean votesValid(int[] inputList)
   {
     int votesTotal = 0;
     for (int c = 0; c < inputList.length; c++)
@@ -95,6 +95,11 @@ public class EnterVotes
     {
       return false;
     }
-  } 
+  }
+  
+  public int getVote(int n, int m)
+  {
+    return votesLists [n][m];
+  }
     
 }

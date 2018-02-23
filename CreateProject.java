@@ -6,6 +6,7 @@ public class CreateProject
   private String projectName;  
   private int noOfMembers;
   private String[] memberNameList;
+  private int [][] memberVoteList;
   
   //----------------------------------------------------------------
   // This constructor allows the user to create a project with at 
@@ -15,6 +16,7 @@ public class CreateProject
   {
     Scanner scan = new Scanner(System.in);
     String empty;
+    memberVoteList = null;
 
     System.out.print("\n\tEnter the project name: ");
     projectName = scan.nextLine();
@@ -108,6 +110,18 @@ public class CreateProject
     String newProjectName = scan.nextLine();
     projectName = newProjectName;
   }
+    
+  public void setVotes()
+  {
+    EnterVotes votes = new EnterVotes();
+    for (int n = 0; n < noOfMembers; n++)
+    {
+      for (int m = 0; m < noOfMembers; m++)
+      {
+        memberVoteList [n][m] = votes.getVotes(n ,m);
+      }
+    }
+  }
   
   public String getProjectName()
   {
@@ -119,7 +133,6 @@ public class CreateProject
   {
     return noOfMembers;
   }
-  
   
   //------------------------------------------------------------------
   // If n is a positive number and does not exceed the number of 
@@ -138,6 +151,19 @@ public class CreateProject
     }  
   }
   
+  public String toStringOnesVotes(int n)
+  {
+    String onesVote = memberNameList[n] + ",";
+    for (int m = 0; m < noOfMembers; m++)
+    {
+      if (m != n)
+      {
+        onesVote += getMemberName(m) + "," + memberVoteList[n][m] + ",";
+      } 
+    }
+    return onesVote;
+  }
+  
   
   //--------------------------------------------------------------------------
   // This compares two projects to see if they have the same project names
@@ -153,21 +179,27 @@ public class CreateProject
         return false;
     }
   }
-
  
   public String toString()
   {
-    String output1 = "\t" + getProjectName() +
+    String output1 = getProjectName() + "," + getMemberNo() + ",";
+                     /*"\t" + getProjectName() +
                      "\n\tNumber of team members: \n\t" + getMemberNo() +
-                     "\n\tNames of team members: \n";
+                     "\n\tNames of team members: \n";*/
     String output2 = "";
+    String output3 = "";
     
     for (int m = 0; m < noOfMembers; m++)
     {
-      output2 += "\t" + getMemberName(m) + "\n";
+      output2 += getMemberName(m) + ",";
+    }
+    
+    for (int m = 0; m < noOfMembers; m++)
+    {
+      output3 += toStringOnesVotes(m);
     }
 
-    return (output1 + output2);
+    return (output1 + output2 + output3);
   }
   
 }

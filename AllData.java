@@ -28,11 +28,16 @@ public class AllData
   //  As both allData and count is static, this change would be 
   //  permanent and universal to all objects of the AllData class.
   //----------------------------------------------------------------
-  public static void setData()
+  public static void addProject()
   {
     allData[count] = new CreateProject(); 
     count += 1;
   }
+  
+  public static void addVotes()
+  {
+    EnterVotes votes = new EnterVotes();
+  }  
   
   public int getCount()
   {
@@ -61,8 +66,8 @@ public class AllData
   
   public String toString()
   {
-    String output1 = "\n\tYou have created " + count + " projects.\n";
-    String output2 = "";
+    /*String output1 = "\n\tYou have created " + count + " projects.\n";*/
+    /*String output2 = "";*/
     String output3 = "";
     String output4 = "";
     
@@ -71,11 +76,11 @@ public class AllData
     for (int n = 0; n < count; n++)
     { 
       project = allData[n];
-      output2 = "\n\tProject " + (n + 1) + " :\n";
-      output3 = (project.toString());
-      output4 += output2 + output3;
+      /*output2 = "\n\tProject " + (n + 1) + " :\n";*/
+      output3 = (project.toString()) + "\n";
+      output4 += output3;
     }
-    return (output1 + output4); 
+    return (/*output1 + output4*/output4); 
   }
   
 }

@@ -1,4 +1,8 @@
 import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+
 
 public class MainMenu
 {
@@ -52,7 +56,7 @@ public class MainMenu
       case 'C':
       case 'c':                      
         
-        allData.setData();
+        allData.addProject();
         //-----------------------------------------------------------
         // This echoes all the information of the projects the user 
         // has created so far; can be enabled to test the program.
@@ -63,7 +67,7 @@ public class MainMenu
         
       case 'V':
       case 'v':
-        EnterVotes enterVotes = new EnterVotes();
+        allData.addVotes();
         backToMenu();
         break;
       
@@ -75,6 +79,24 @@ public class MainMenu
         
       case 'Q':
       case 'q':
+        PrintWriter outputStream = null;
+        try 
+        {
+            outputStream
+                  = new PrintWriter(new FileOutputStream("stupidallocator.txt"));
+        } 
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("Error opening the file stupidallocator.txt.");
+            System.exit(0);
+        }
+        
+        /*System.out.println("Writing to file.");*/
+        outputStream.println(allData.toString());
+        outputStream.close();
+        
+        System.out.println("\tValues written to \"stupidallocator.txt\".");
+
         System.out.println("\tPROGRAM ENDED\n");
         System.exit(0);
     }
