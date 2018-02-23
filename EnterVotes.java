@@ -4,6 +4,7 @@ public class EnterVotes
 {
   private CreateProject projectWanted;
   private int[][] votesLists;
+  private int dataNo;
     
   public EnterVotes()
   {
@@ -31,6 +32,7 @@ public class EnterVotes
         {
           projectExisted = true;
           projectWanted = new CreateProject(existingProject);
+          dataNo = n;
         }
       }
       
@@ -54,7 +56,7 @@ public class EnterVotes
     for (int a = 0; a < countMember; a++)
     {
       System.out.println("\tEnter " + projectWanted.getMemberName(a) 
-                         + "’s votes, points must add up to 100: ");
+                         + "’s votes, points must add up to 100: \n");
       
       do 
       {
@@ -62,7 +64,7 @@ public class EnterVotes
         {
           if (b != a)
           {
-            System.out.print("\n\t\tEnter " + projectWanted.getMemberName(a) 
+            System.out.print("\t\tEnter " + projectWanted.getMemberName(a) 
                            +"’s points for " + projectWanted.getMemberName(b) + ":\t");
             votesLists[a][b] = scan.nextInt();
           }   
@@ -70,13 +72,17 @@ public class EnterVotes
         
         if (!votesEqualAHundred(votesLists[a]))
         {
-          System.out.print("\tVotes do not add up to 100.\n"+
-                           "\tEnter Again.");
+          System.out.println("\tVotes do not add up to 100.\n"+
+                           "\n\tEnter Again:");
         }
       } while (!votesEqualAHundred(votesLists[a]));  
       
       System.out.println();
     }
+    // Set the votes data in alldata
+    AllData dataWithVotes = new AllData();
+    dataWithVotes.setVote(dataNo, votesLists);
+    
     
   } 
  

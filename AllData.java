@@ -34,6 +34,13 @@ public class AllData
     count += 1;
   }
   
+  public static void setVote(int dataNo, int[][] voteList)
+  {
+    CreateProject projectVote = new CreateProject(0);
+    projectVote = allData[dataNo];
+    projectVote.setVote(voteList);
+  }  
+  
   public int getCount()
   {
     return count;
@@ -61,8 +68,8 @@ public class AllData
   
   public String toString()
   {
-    String output1 = "\n\tYou have created " + count + " projects.\n";
-    String output2 = "";
+    /*String output1 = "\n\tYou have created " + count + " projects.\n";*/
+    /*String output2 = "";*/
     String output3 = "";
     String output4 = "";
     
@@ -71,11 +78,11 @@ public class AllData
     for (int n = 0; n < count; n++)
     { 
       project = allData[n];
-      output2 = "\n\tProject " + (n + 1) + " :\n";
-      output3 = (project.toString());
-      output4 += output2 + output3;
+      /*output2 = "\n\tProject " + (n + 1) + " :\n";*/
+      output3 = (project.toString()) + "\n";
+      output4 += output3;
     }
-    return (output1 + output4); 
+    return (/*output1 + output4*/output4); 
   }
   
 }
