@@ -6,7 +6,7 @@ public class CreateProject
   private String projectName;  
   private int noOfMembers;
   private String[] memberNameList;
-  private int[][] memberVoteList;
+  private int [][] memberVoteList;
   
   //----------------------------------------------------------------
   // This constructor allows the user to create a project with at 
@@ -16,6 +16,7 @@ public class CreateProject
   {
     Scanner scan = new Scanner(System.in);
     String empty;
+    memberVoteList = null;
 
     System.out.print("\n\tEnter the project name: ");
     projectName = scan.nextLine();
@@ -110,9 +111,16 @@ public class CreateProject
     projectName = newProjectName;
   }
     
-  public void setVote(int[][] voteList)
+  public void setVotes()
   {
-    memberVoteList = voteList;
+    EnterVotes votes = new EnterVotes();
+    for (int n = 0; n < noOfMembers; n++)
+    {
+      for (int m = 0; m < noOfMembers; m++)
+      {
+        memberVoteList [n][m] = votes.getVotes(n ,m);
+      }
+    }
   }
   
   public String getProjectName()

@@ -28,17 +28,15 @@ public class AllData
   //  As both allData and count is static, this change would be 
   //  permanent and universal to all objects of the AllData class.
   //----------------------------------------------------------------
-  public static void setData()
+  public static void addProject()
   {
     allData[count] = new CreateProject(); 
     count += 1;
   }
   
-  public static void setVote(int dataNo, int[][] voteList)
+  public static void addVotes()
   {
-    CreateProject projectVote = new CreateProject(0);
-    projectVote = allData[dataNo];
-    projectVote.setVote(voteList);
+    EnterVotes votes = new EnterVotes();
   }  
   
   public int getCount()

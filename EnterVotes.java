@@ -2,14 +2,12 @@ import java.util.Scanner;
 
 public class EnterVotes
 {
-  private CreateProject projectWanted;
   private int[][] votesLists;
-  private int dataNo;
     
   public EnterVotes()
   {
     Scanner scan = new Scanner(System.in);
-    projectWanted = new CreateProject(0);
+    CreateProject projectWanted = new CreateProject(0);
       
     System.out.print("\n\tEnter the project name: ");
     projectWanted.setProjectName();
@@ -32,7 +30,6 @@ public class EnterVotes
         {
           projectExisted = true;
           projectWanted = new CreateProject(existingProject);
-          dataNo = n;
         }
       }
       
@@ -70,23 +67,20 @@ public class EnterVotes
           }   
         }
         
-        if (!votesEqualAHundred(votesLists[a]))
+        if (!votesValid(votesLists[a]))
         {
           System.out.println("\tVotes do not add up to 100.\n"+
                            "\n\tEnter Again:");
         }
-      } while (!votesEqualAHundred(votesLists[a]));  
+      } while (!votesValid(votesLists[a]));  
       
       System.out.println();
     }
-    // Set the votes data in alldata
-    AllData dataWithVotes = new AllData();
-    dataWithVotes.setVote(dataNo, votesLists);
     
     
   } 
  
-  private boolean votesEqualAHundred(int[] inputList)
+  private boolean votesValid(int[] inputList)
   {
     int votesTotal = 0;
     for (int c = 0; c < inputList.length; c++)
@@ -101,6 +95,11 @@ public class EnterVotes
     {
       return false;
     }
-  } 
+  }
+  
+  public int getVote(int n, int m)
+  {
+    return votesLists [n][m];
+  }
     
 }
