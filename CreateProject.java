@@ -12,10 +12,6 @@ public class CreateProject
   private String[] memberNameList;
   private int[][] memberVoteList;
   
-  //----------------------------------------------------------------
-  // This constructor allows the user to create a project with at 
-  // most 20 team members.
-  //----------------------------------------------------------------
   public CreateProject()
   {
     Scanner scan = new Scanner(System.in);
@@ -81,22 +77,13 @@ public class CreateProject
   
   //---------------------------------------------------------------------
   // This constructor creates a default CreateProject object when the 
-  // constructor is called with 0.
+  // constructor is called with an integer, normally used with 0.
   //---------------------------------------------------------------------
   public CreateProject(int n)
   {
-    final int VALID = 0;
-    if (n==VALID)
-    {
-      projectName = "";
-      noOfMembers = 0;
-      memberNameList = null;
-    }
-    else
-    {
-      System.out.print("Fatal error: Constructor passed malformed argument.");
-      System.exit(1);
-    }
+    projectName = "";
+    noOfMembers = 0;
+    memberNameList = null;
   }
   
   //-------------------------------------------------------------------
@@ -190,29 +177,38 @@ public class CreateProject
  
   public String toString()
   {
-    String output1 = getProjectName() + ", " + getMemberNo() + ", ";
+    String output1 = getProjectName() + "," + getMemberNo() + ",";
     String output2 = "";
+    String output3 = "";
     
     for (int n = 0; n < noOfMembers; n++)
     {
-      output2 += getMemberName(n) + ", ";
+      output2 += getMemberName(n) + ",";
+    }
     
-      for (int m = 0; m < noOfMembers; m++)
+    if (memberVoteList!=null)
+    {
+      for (int n = 0; n<noOfMembers; n++)
       {
-        if (n!=m)
-        {
-          output2 += getMemberName(m)+", "+getMemberVote(n,m)+ ", ";
-        }
-        else
-        {
-          output2 += getMemberName(m)+", ";
-        }
+        output3 += toStringVotes(n);        
       }
     }
-
-    return (output1 + output2);
+    return (output1 + output2 + output3);
   }
   
+  private String toStringVotes(int n)
+  {
+    String onesVote = memberNameList[n] + ",";
+    for (int m = 0; m < noOfMembers; m++)
+    {
+      if (m != n)
+      {
+        onesVote += getMemberName(m) + "," + memberVoteList[n][m] + ",";
+      } 
+    }
+    return onesVote;
+  }
+
   private boolean validateName(String name)
   {
     boolean valid = true;
@@ -244,10 +240,7 @@ public class CreateProject
     System.out.println("Fatal error: "+ errorMessage);
     System.exit(1);
   }
-  
-  //----------------------------------------------------------------
-  // Checks if the project name matches with existing project names
-  //----------------------------------------------------------------  
+   
   public boolean projectExist(String name)  
   {
     boolean exist = false;

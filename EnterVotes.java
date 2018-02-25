@@ -10,11 +10,10 @@ public class EnterVotes
     AllData checkData = new AllData();
     final int NOPROJECT = 0;
     
-    // Make sure there exist a project. 
     if (checkData.getCount() == NOPROJECT)
     {
-      System.out.println("\n\tNo project was created." +
-                         "\n\tPlease create a project to enter vote.");
+      System.out.println("\n\tNo project created." +
+                         "\n\tPlease create projects first.");
       votesLists = null;
       projectNo = 0;
     }
@@ -23,14 +22,14 @@ public class EnterVotes
       Scanner scan = new Scanner(System.in);
       CreateProject projectWanted = new CreateProject(0);
     
-      System.out.print("\n\tEnter the project name: ");
+      System.out.print("\n\tExisting projects are: \n\t" +
+                         ExistingProjectNames() +
+                       "\n\n\tEnter the project name: ");
       projectWanted.setProjectName();
       
       while (!projectWanted.projectExist())
       {
         System.out.print("\n\tThis project doesn't exist.\n"+
-                         "\n\tExisting projects are: \n\t" +
-                         ExistingProjectNames() +
                          "\n\tEnter an existing project name: ");
         projectWanted.setProjectName();
       }
@@ -48,7 +47,6 @@ public class EnterVotes
       System.out.println("\tThere are " + projectWanted.getMemberNo() 
                            + " team members.\n");
 
-    // Allows user to enter votes
       int countMember = projectWanted.getMemberNo();
       votesLists = new int[countMember][countMember];
  
@@ -61,9 +59,7 @@ public class EnterVotes
         {
           for (int b = 0; b < countMember; b++)
           {
-            if (b != a) /*if the number of team member is 1, this if statement will never be executed, 
-                         * and thus no vote will be stored. So the vote will never be equal to 100 
-                         * and the do...while statement won't end.*/
+            if (b != a) 
             {
               do
               {
@@ -89,20 +85,9 @@ public class EnterVotes
         System.out.println();
       }
  
-    // Set the votes data in alldata
       AllData dataWithVotes = new AllData();
       dataWithVotes.setVote(projectNo, votesLists);
     }
-  }
-  
-  public int getProjectNo()
-  {
-    return projectNo;
-  }
-    
-  public int [][] getVoteList()
-  {
-    return votesLists;
   }
   
   private boolean votesValid(int theVote)
