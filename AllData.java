@@ -34,9 +34,11 @@ public class AllData
     count += 1;
   }
   
-  public static void addVotes()
+  public static void setVote(int dataNo, int[][] voteList)
   {
-    EnterVotes votes = new EnterVotes();
+    CreateProject projectVote = new CreateProject(0);
+    projectVote = allData[dataNo];
+    projectVote.setVote(voteList);
   }  
   
   public int getCount()

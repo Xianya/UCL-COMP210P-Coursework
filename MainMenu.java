@@ -67,7 +67,7 @@ public class MainMenu
         
       case 'V':
       case 'v':
-        allData.addVotes();
+        EnterVotes enterVotes = new EnterVotes();
         backToMenu();
         break;
       

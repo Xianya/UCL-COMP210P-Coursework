@@ -6,7 +6,7 @@ public class CreateProject
   private String projectName;  
   private int noOfMembers;
   private String[] memberNameList;
-  private int [][] memberVoteList;
+  private int[][] memberVoteList;
   
   //----------------------------------------------------------------
   // This constructor allows the user to create a project with at 
@@ -111,16 +111,9 @@ public class CreateProject
     projectName = newProjectName;
   }
     
-  public void setVotes()
+  public void setVote(int[][] voteList)
   {
-    EnterVotes votes = new EnterVotes();
-    for (int n = 0; n < noOfMembers; n++)
-    {
-      for (int m = 0; m < noOfMembers; m++)
-      {
-        memberVoteList [n][m] = votes.getVotes(n ,m);
-      }
-    }
+    memberVoteList = voteList;
   }
   
   public String getProjectName()
