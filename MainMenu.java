@@ -9,75 +9,65 @@ public class MainMenu
   
   private AllData allData;
   
+  // -----------------------
+  // The constructor method
+  // -----------------------
   public MainMenu()
   {
     allData = new AllData(0);
   }
-  
+    
+  // --------------------------------------
+  // Show the panel and take in the option 
+  // and carry out other class
+  // ----------------------- --------------
   public void mainMenu()
   {
     Scanner scan = new Scanner(System.in);
     String optionInput;
     char option;
-    boolean valid;
     
     MainMenu.outPut();
     
-    //---------------------------------------------------------
-    // This restricts the user input to only one of the options;
-    // otherwise the user would be asked to enter the option again
-    //---------------------------------------------------------
     do    
     {
       System.out.print("\n\tPlease choose an option: ");
-      optionInput = scan.next(); //-----------------------------------------
-                                 //Instead of using “.charAt(0)” here,  
-                                 //we dont want to take the first letter of
-                                 //a mistaken word input, such as "clear".
-                                 //-----------------------------------------
-      valid = ((optionInput.equalsIgnoreCase("a")) ||  
-               (optionInput.equalsIgnoreCase("c")) ||
-               (optionInput.equalsIgnoreCase("v")) ||
-               (optionInput.equalsIgnoreCase("s")) ||
-               (optionInput.equalsIgnoreCase("q")));
-  
-    } while (!valid);
+      optionInput = scan.next().toLowerCase(); //-----------------------------------------
+                                               // Instead of using “.charAt(0)” here,  
+                                               // we dont want to take the first letter of
+                                               // a mistaken word input, such as "clear".
+                                               //-----------------------------------------
+      if (!validOption(optionInput))
+      {
+        System.out.println("\tUnknown option, please try again:");
+      }
+
+    } while (!validOption(optionInput));
     
-    option = optionInput.charAt(0);
+    option = optionInput.charAt(0); // make the option ready to be used in switch
               
     switch (option)
     {
-      case 'A':
       case 'a':
         About.about();
         backToMenu();
         break;
         
-      case 'C':
       case 'c':                      
-        
         allData.addProject();
-        //-----------------------------------------------------------
-        // This echoes all the information of the projects the user 
-        // has created so far; can be enabled to test the program.
-        //-----------------------------------------------------------
-        /*System.out.print(allData.toString());*/
         backToMenu();
         break;
         
-      case 'V':
       case 'v':
         EnterVotes enterVotes = new EnterVotes();
         backToMenu();
         break;
       
-      case 'S':
       case 's':
         ShowProject.showProject();
         backToMenu();
         break;
         
-      case 'Q':
       case 'q':
         PrintWriter outputStream = null;
         try 
@@ -91,17 +81,20 @@ public class MainMenu
             System.exit(0);
         }
         
-        /*System.out.println("Writing to file.");*/
+        System.out.println("\tWriting to file.");
         outputStream.println(allData.toString());
         outputStream.close();
         
-        System.out.println("\tValues written to \"stupidallocator.txt\".");
+        System.out.println("\tText written to \"stupidallocator.txt\".");
 
         System.out.println("\tPROGRAM ENDED\n");
         System.exit(0);
     }
   }
   
+  // ---------------------
+  // Show the menu panel. 
+  // ---------------------
   private static void outPut()
   {
     System.out.println("\n\t ------------------------------------- \n"+
@@ -114,10 +107,11 @@ public class MainMenu
                          "\t|  Quit (Q)                           |\n"+
                          "\t ------------------------------------- \n");
   }
-
-
   
-  private void backToMenu()
+  // ----------------------------------
+  // Bring the user back to main menu.
+  // ----------------------------------
+  public void backToMenu()
   {
     Scanner scan = new Scanner(System.in);
     String option;
@@ -129,5 +123,17 @@ public class MainMenu
                                //--------------------------------
     mainMenu();
   }
+  
+  // --------------------------------------------------------------
+  // Make sure the input option is only a letter (not even a word) 
+  // of the 5 choice which ignores case.
+  // --------------------------------------------------------------
+  private static boolean validOption(String input)
+  {
+    return ((input.equals("a")) || (input.equals("c")) ||
+            (input.equals("v")) || (input.equals("s")) ||
+            (input.equals("q")));
+  }
+        
 }
 
