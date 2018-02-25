@@ -2,7 +2,11 @@ import java.util.Scanner;
 
 public class CreateProject
 {
-  private final int MAX_MEMBERS = 20;
+  public static final int MAX_MEMBERS = 20;
+  public static final int MIN_MEMBERS = 3;
+  public static final int MAXNAMELENGTH = 30;
+  public static final int MINNAMELENGTH = 1;
+  
   private String projectName;  
   private int noOfMembers;
   private String[] memberNameList;
@@ -16,42 +20,36 @@ public class CreateProject
   {
     Scanner scan = new Scanner(System.in);
     String empty;
+    memberVoteList = null;
 
     System.out.print("\n\tEnter the project name: ");
     projectName = scan.nextLine();
-      
-    //------------------------------------------------------------
-    // The following checks if the project name entered matches 
-    // with previously created project names; if so, the user would 
-    // be asked to create a different project name.
-    //------------------------------------------------------------  
-    int count;
-    CreateProject existingProject = new CreateProject(0);
-    AllData checkData = new AllData();
-    count = checkData.getCount();
-        
-    do 
-      {
-        for (int n = 0; n < count; n++)
-        {
-          existingProject = checkData.getProject(n);
-          if (equals(existingProject))
-            {
-              System.out.print("\tThis project name already exist.\n"+
-                               "\tEnter a different project name: ");
-              projectName = scan.nextLine();
-            }
-        }
-    } while (equals(existingProject));
+    
+    while (!validateName(projectName))
+    {
+      System.out.print("\tInvalid project name.\n"+
+                        "\tName has to be less than 30 characters long; \n"+
+                        "\tconsisted of only letters and numbers.\n"+
+                        "\tEnter a valid project name: ");
+      projectName = scan.nextLine();
+    }
+    
+    while (nameExist(projectName))
+    {
+      System.out.print("\tThis project name already exist.\n"+
+                       "\tEnter a different project name: ");
+      projectName = scan.nextLine();
+    }
         
       
     System.out.print("\tEnter the number of team members: "); 
     noOfMembers = scan.nextInt();
       
-    while (noOfMembers <= 0 || noOfMembers > MAX_MEMBERS)
+    while (!validateNoOfMembers(noOfMembers))
     {
       System.out.print("\tInvalid number of team members.\n"+
-                       "\n\tEnter the number of team members: ");
+                       "\tNumber of team members has to be between 3 and 20.\n"+
+                       "\tEnter the number of team members again: ");
       noOfMembers = scan.nextInt();
     }
       
@@ -68,20 +66,37 @@ public class CreateProject
         System.out.print("\t\tEnter the name of team member ");
         System.out.print((index+1) + ":  ");
         memberNameList[index] = scan.nextLine();
+      
+        while (!validateName(memberNameList[index]))
+        {
+          System.out.print("\tInvalid name.\n"+
+                           "\tName has to be less than 30 characters long; \n"+
+                           "\tconsisted of only letters and numbers.\n"+
+                           "\t\tEnter a valid name: ");
+          memberNameList[index] = scan.nextLine();
+        }
       }           
  
   }
   
   //---------------------------------------------------------------------
   // This constructor creates a default CreateProject object when the 
-  // constructor is called with an argument of the int type (normally 
-  // used with 0).
+  // constructor is called with 0.
   //---------------------------------------------------------------------
   public CreateProject(int n)
   {
-    projectName = "";
-    noOfMembers = 0;
-    memberNameList = null;
+    final int VALID = 0;
+    if (n==VALID)
+    {
+      projectName = "";
+      noOfMembers = 0;
+      memberNameList = null;
+    }
+    else
+    {
+      System.out.print("Fatal error: Constructor passed malformed argument.");
+      System.exit(1);
+    }
   }
   
   //-------------------------------------------------------------------
@@ -175,9 +190,6 @@ public class CreateProject
   public String toString()
   {
     String output1 = getProjectName() + "," + getMemberNo() + ",";
-                     /*"\t" + getProjectName() +
-                     "\n\tNumber of team members: \n\t" + getMemberNo() +
-                     "\n\tNames of team members: \n";*/
     String output2 = "";
     String output3 = "";
     
@@ -192,6 +204,57 @@ public class CreateProject
     }
 
     return (output1 + output2 + output3);
+  }
+  
+  private boolean validateName(String name)
+  {
+    boolean valid = true;
+    if (name.length()<MINNAMELENGTH || name.length()>MAXNAMELENGTH)
+    {
+      valid = false;
+    }
+    for (int i = 0; i <name.length(); i++)
+    {
+      if (!Character.isLetterOrDigit(name.charAt(i)))
+        valid = false;
+    }
+    
+    return valid;
+  }
+  
+  private boolean validateNoOfMembers(int n)
+  {
+    boolean valid = false;
+    if (n>=MIN_MEMBERS && n<=MAX_MEMBERS)
+    {
+      valid = true;
+    }
+    return valid;
+  }
+  
+  //----------------------------------------------------------------
+  // Checks if the project name matches with existing project names
+  //----------------------------------------------------------------  
+  private boolean nameExist(String name)  
+  {
+    boolean exist = false;
+    int count;
+    String existingName;
+    CreateProject existingProject = new CreateProject(0);
+    AllData checkData = new AllData();
+    count = checkData.getCount();
+    
+    for (int n = 0; n < count; n++)
+    {
+      existingProject = checkData.getProject(n);
+      existingName = existingProject.getProjectName();
+      if (name.equalsIgnoreCase(existingName))
+      {
+        exist = true;
+      }
+    }
+    
+    return exist;
   }
   
 }

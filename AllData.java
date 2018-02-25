@@ -4,14 +4,21 @@ public class AllData
   private static int count;
   
   //---------------------------------------------------------------
-  // This reads in an integer number, normally 0, and sets the 
-  // default object of the class and allows information of up to 100 
-  // projects to be stored.
+  // This reads in 0, and sets the default object of the class and 
+  // allows information of up to 100 projects to be stored.
   //--------------------------------------------------------------- 
   public AllData(int n)
   {
-    allData = new CreateProject [100];
-    count = 0;
+    final int VALID = 0;
+    if (n == VALID)
+    {
+      allData = new CreateProject [100];
+      count = 0;
+    }
+    else
+    {
+      fatalError("Constructor passed malformed argument.");
+    }
   }
   
   //----------------------------------------------------------------
@@ -24,22 +31,30 @@ public class AllData
     count = count;
   }
   
-  //----------------------------------------------------------------
-  //  As both allData and count is static, this change would be 
-  //  permanent and universal to all objects of the AllData class.
-  //----------------------------------------------------------------
-  public static void setData()
+  //--------------------------------------------------------------------
+  //  As both allData and count is static, this change would be updated
+  //  to all objects of the AllData class.
+  //--------------------------------------------------------------------
+  public void addProject()
   {
     allData[count] = new CreateProject(); 
     count += 1;
   }
   
-  public static void setVote(int dataNo, int[][] voteList)
+  public void setVote(int projectNo, int[][] voteList)
   {
-    CreateProject projectVote = new CreateProject(0);
-    projectVote = allData[dataNo];
-    projectVote.setVote(voteList);
+    if (validateNo(projectNo))
+    {
+      CreateProject projectVote = new CreateProject(0);
+      projectVote = allData[projectNo];
+      projectVote.setVote(voteList); 
+    }
+    else
+    {
+      fatalError("Invalid number of projects passed as the argument.");
+    }
   }  
+  
   
   public int getCount()
   {
@@ -54,35 +69,48 @@ public class AllData
   public CreateProject getProject(int n)
   {
     CreateProject project = new CreateProject(0);
-    
-    if (n >= 0 && n < count)
+    if (validateNo(n))
     {
       project = allData[n];
-      return project;
     }
     else
     {
-      return null;
+      fatalError("Invalid number of project passed as the argument.");
     }
+    return project;
   }
   
   public String toString()
   {
-    /*String output1 = "\n\tYou have created " + count + " projects.\n";*/
-    /*String output2 = "";*/
-    String output3 = "";
-    String output4 = "";
+    String output1 = "";
+    String output2 = "";
     
     CreateProject project = new CreateProject(0);
     
     for (int n = 0; n < count; n++)
     { 
       project = allData[n];
-      /*output2 = "\n\tProject " + (n + 1) + " :\n";*/
-      output3 = (project.toString()) + "\n";
-      output4 += output3;
+      output1 = (project.toString()) + "\n";
+      output2 += output1;
     }
-    return (/*output1 + output4*/output4); 
+    return (output2); 
+  }
+  
+  
+  public static void fatalError(String errorMessage)
+  {
+    System.out.println("Fatal error: "+ errorMessage);
+    System.exit(1);
+  }
+  
+  private boolean validateNo(int n)
+  {
+    boolean valid = false;
+    if (n >= 0 && n < count)
+    {
+      valid = true;
+    }
+    return valid;
   }
   
 }
