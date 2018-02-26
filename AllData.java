@@ -37,13 +37,16 @@ public class AllData
   
   public void setVote(int projectNo, int[][] voteList)
   {
-    if (validateNo(projectNo))
+    if (voteList != null)
     {
-      allData[projectNo].setVote(voteList); 
-    }
-    else
-    {
-      fatalError("Invalid number of projects passed as the argument.");
+      if (validateNo(projectNo))
+      {
+        allData[projectNo].setVote(voteList); 
+      }
+      else
+      {
+        fatalError("Invalid number of projects passed as the argument.");
+      }
     }
   }  
   
