@@ -29,7 +29,7 @@ public class EnterVotes
       while (!projectWanted.projectExist())
       {
         System.out.print("\n\tThis project doesn't exist.\n"+
-                         "\n\tEnter an existing project name: ");
+                         "\tEnter an existing project name.\n");
         projectWanted.setProjectName();
       }
      
@@ -68,7 +68,7 @@ public class EnterVotes
  
                 if (!votesValid(votesLists[a][b]))
                 {
-                  System.out.println("\t\tThe points of a vote must be between 0 and 100 inclusive.");
+                  System.out.println("\n\t\tThe points of a vote must be between 0 and 100 inclusive.\n");
                 }
               } while (!votesValid(votesLists[a][b]));
             }   
@@ -76,7 +76,7 @@ public class EnterVotes
  
           if (!votesHundred(votesLists[a]))
           {
-            System.out.println("\tVotes do not add up to 100.\n"+
+            System.out.println("\n\tVotes do not add up to 100.\n"+
                                "\n\tEnter Again:");
           }
         } while (!votesHundred(votesLists[a]));  
