@@ -23,15 +23,13 @@ public class CreateProject
     Scanner scan = new Scanner(System.in);
     String empty;
     memberVoteList = null;
-
-    System.out.print("\n\tEnter the project name: ");
-    projectName = setProjectName();
+    setProjectName();
     
     while (projectExist())
     {
       System.out.print("\tThis project name already exist.\n"+
                        "\tEnter a different project name: ");
-      projectName = setProjectName();
+      setProjectName();
     }
         
       
@@ -128,8 +126,9 @@ public class CreateProject
   public void setProjectName()
   {
     Scanner scan = new Scanner(System.in);
+    System.out.print("\n\tEnter the project name: ");
     String newProjectName = scan.nextLine();
-    while (!validateName(NewProjectName))
+    while (!validateName(newProjectName))
     {
       System.out.print("\tInvalid project name.\n"+
                         "\tName has to be less than 30 characters long; \n"+

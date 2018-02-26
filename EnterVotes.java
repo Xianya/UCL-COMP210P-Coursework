@@ -22,9 +22,8 @@ public class EnterVotes
       Scanner scan = new Scanner(System.in);
       CreateProject projectWanted = new CreateProject(0);
     
-      System.out.print("\n\tExisting projects are: \n\t" +
-                         ExistingProjectNames() +
-                       "\n\n\tEnter the project name: ");
+      System.out.println("\n\tExisting projects are: \n\t" +
+                         ExistingProjectNames());
       projectWanted.setProjectName();
       
       while (!projectWanted.projectExist())
@@ -95,7 +94,20 @@ public class EnterVotes
   
   public int[][] getVotesLists()
   {
-    return votesLists;
+    int [][]list = null;
+    int size = votesLists.length;
+    if (size!=0)
+    {
+      list = new int [size][size];
+      for (int n = 0; n<size; n++)
+      {
+        for(int m = 0; m<size; m++)
+        {
+          list[n][m] = votesLists[n][m];
+        }
+      }
+    }
+    return list;
   }
   
   private boolean votesValid(int theVote)
