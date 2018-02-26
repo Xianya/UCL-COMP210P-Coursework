@@ -95,9 +95,9 @@ public class EnterVotes
   public int[][] getVotesLists()
   {
     int [][]list = null;
-    int size = votesLists.length;
-    if (size!=0)
+    if (votesLists!=null)
     {
+      int size = votesLists.length;
       list = new int [size][size];
       for (int n = 0; n<size; n++)
       {

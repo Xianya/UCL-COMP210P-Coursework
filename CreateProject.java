@@ -28,7 +28,7 @@ public class CreateProject
     while (projectExist())
     {
       System.out.print("\tThis project name already exist.\n"+
-                       "\tEnter a different project name: ");
+                       "\tEnter a different project name. ");
       setProjectName();
     }
         
@@ -59,8 +59,9 @@ public class CreateProject
         {
           System.out.print("\tInvalid name.\n"+
                            "\tName has to be less than 30 characters long; \n"+
-                           "\tconsisted of only letters and numbers.\n"+
-                           "\t\tEnter a valid name: ");
+                           "\tconsisted of only letters and numbers.\n");
+          System.out.print("\n\t\tEnter the name of team member ");
+          System.out.print((index+1) + ":  ");
           memberNameList[index] = scan.nextLine();
         }
       
@@ -70,7 +71,9 @@ public class CreateProject
           String existingMember = memberNameList[n];
           while (existingMember.equalsIgnoreCase(memberNameList[index]))
           {
-            System.out.print("\n\tName already exists.\n\t\tEnter a different name: ");
+            System.out.print("\n\tName already exists.\n\t\tEnter a different name.\n");
+            System.out.print("\n\t\tEnter the name of team member ");
+            System.out.print((index+1) + ":  ");
             memberNameList[index] = scan.nextLine();
           }
         }
