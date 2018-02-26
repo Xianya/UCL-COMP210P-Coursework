@@ -183,13 +183,13 @@ public class CreateProject
   }
   
   //--------------------------------------------------------------------
-  // If n and m is within valid range, this returns the value of the nth 
-  // person's vote for the mth person
+  // If n and m is within valid range and not the same, this returns the 
+  // value of the nth person's vote for the mth person
   //--------------------------------------------------------------------
   public int getMemberVote(int n, int m)
   {
     final int ERROR = 0;
-    if (n >= 0 && m >= 0 && n< noOfMembers && m< noOfMembers)
+    if (n >= 0 && m >= 0 && n< noOfMembers && m< noOfMembers && n!=m)
     {
       return memberVoteList[n][m];
     }

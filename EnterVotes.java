@@ -58,7 +58,11 @@ public class EnterVotes
         {
           for (int b = 0; b < countMember; b++)
           {
-            if (b != a) 
+            if (b == a)
+            {
+              votesLists[a][b] = 0;
+            }
+            else
             {
               do
               {
