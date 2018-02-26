@@ -1,5 +1,6 @@
 public class AllData
 {
+  public static final int MAX_PROJECTS = 100;
   private static CreateProject [] allData;
   private static int count;
   
@@ -10,7 +11,7 @@ public class AllData
   //--------------------------------------------------------------- 
   public AllData(int n)
   {
-      allData = new CreateProject [100];
+      allData = new CreateProject [MAX_PROJECTS];
       count = 0;
   }
   
@@ -38,9 +39,7 @@ public class AllData
   {
     if (validateNo(projectNo))
     {
-      CreateProject projectVote = new CreateProject(0);
-      projectVote = allData[projectNo];
-      projectVote.setVote(voteList); 
+      allData[projectNo].setVote(voteList); 
     }
     else
     {

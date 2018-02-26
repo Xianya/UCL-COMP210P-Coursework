@@ -85,9 +85,17 @@ public class EnterVotes
         System.out.println();
       }
  
-      AllData dataWithVotes = new AllData();
-      dataWithVotes.setVote(projectNo, votesLists);
     }
+  }
+  
+  public int getProjectNo()
+  {
+    return projectNo;
+  }
+  
+  public int[][] getVotesLists()
+  {
+    return votesLists;
   }
   
   private boolean votesValid(int theVote)

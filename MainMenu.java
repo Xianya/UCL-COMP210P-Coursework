@@ -52,7 +52,8 @@ public class MainMenu
         break;
         
       case 'v':
-        EnterVotes enterVotes = new EnterVotes();
+        EnterVotes createVotes = new EnterVotes();
+        allData.setVote(createVotes.getProjectNo(), createVotes.getVotesLists());
         backToMenu();
         break;
       
@@ -99,7 +100,7 @@ public class MainMenu
   }
   
 
-  public void backToMenu()
+  private void backToMenu()
   {
     Scanner scan = new Scanner(System.in);
     String option;
