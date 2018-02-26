@@ -14,71 +14,22 @@ public class CreateProject
   
   
   //--------------------------------------------------------------------------
-  // This constructor takes in user input and, if valid, initialises the 
-  // project name, number of members, name of members accordingly; while 
-  // setting the values of votes to default, to be inputted later.
+  // This constructor takes in user input and initialises the project name, 
+  // number of members, name of members accordingly; setting the values of 
+  // votes to default, to be inputted later.
   // -------------------------------------------------------------------------
   public CreateProject()
   {
     Scanner scan = new Scanner(System.in);
-    String empty;
     memberVoteList = null;
     setProjectName();
-    
     while (projectExist())
     {
-      System.out.print("\tThis project name already exist.\n"+
-                       "\tEnter a different project name. ");
+      System.out.print("\n\tThis project name already exist.\n");
       setProjectName();
-    }
-        
-      
-    System.out.print("\tEnter the number of team members: "); 
-    noOfMembers = scan.nextInt();
-      
-    while (!validateNoOfMembers(noOfMembers))
-    {
-      System.out.print("\tInvalid number of team members.\n"+
-                       "\tNumber of team members has to be between 3 and 20.\n"+
-                       "\tEnter the number of team members again: ");
-      noOfMembers = scan.nextInt();
-    }
-      
-    memberNameList = new String[noOfMembers];
-   
-    // This deals with the Line Terminator so the first item of the following for loop is not set to empty.
-    empty = scan.nextLine();
-                                 
-    for (int index = 0; index < memberNameList.length; index++)
-      {
-        System.out.print("\t\tEnter the name of team member ");
-        System.out.print((index+1) + ":  ");
-        memberNameList[index] = scan.nextLine();
-      
-        while (!validateName(memberNameList[index]))
-        {
-          System.out.print("\tInvalid name.\n"+
-                           "\tName has to be less than 30 characters long; \n"+
-                           "\tconsisted of only letters and numbers.\n");
-          System.out.print("\n\t\tEnter the name of team member ");
-          System.out.print((index+1) + ":  ");
-          memberNameList[index] = scan.nextLine();
-        }
-      
-    // This checks if the name of member entered is the same with existing members, as this might cause confusion.
-        for (int n =0; n< index; n++)
-        {
-          String existingMember = memberNameList[n];
-          while (existingMember.equalsIgnoreCase(memberNameList[index]))
-          {
-            System.out.print("\n\tName already exists.\n\t\tEnter a different name.\n");
-            System.out.print("\n\t\tEnter the name of team member ");
-            System.out.print((index+1) + ":  ");
-            memberNameList[index] = scan.nextLine();
-          }
-        }
-      }           
- 
+    } 
+    setNoOfMembers();
+    setMemberNameList();           
   }
   
   //---------------------------------------------------------------------
@@ -122,31 +73,86 @@ public class CreateProject
       }
     }
   }
-
-  //------------------------------------------------------------------
-  // This allows users to set a valid name of a project
-  // -----------------------------------------------------------------
+  
+  //------------------------------------------------------------------------
+  // Allows user to set project name to the value of a valid input
+  //------------------------------------------------------------------------
   public void setProjectName()
   {
-    Scanner scan = new Scanner(System.in);
     System.out.print("\n\tEnter the project name: ");
-    String newProjectName = scan.nextLine();
-    while (!validateName(newProjectName))
-    {
-      System.out.print("\tInvalid project name.\n"+
-                        "\tName has to be less than 30 characters long; \n"+
-                        "\tconsisted of only letters and numbers.\n"+
-                        "\tEnter a valid project name: ");
-      newProjectName = scan.nextLine();
-    }
-    projectName = newProjectName;
+    projectName = inputName();
   }
-    
+  
+  //------------------------------------------------------------------------
+  // Allows user to set number of team members to the value of a valid input
+  //------------------------------------------------------------------------
+  public void setNoOfMembers()
+  {
+    Scanner scan = new Scanner(System.in);
+    int number;
+    System.out.print("\tEnter the number of team members: "); 
+    number = scan.nextInt();
+      
+    while (!validateNoOfMembers(number))
+    {
+      System.out.print("\n\tInvalid number of team members.\n"+
+                         "\tNumber of team members has to be between 3 and 20.\n"+
+                        "\n\tEnter a valid number: ");
+      number = scan.nextInt();
+    } 
+    noOfMembers = number;
+  }
+  
+  //--------------------------------------------------------------------------
+  // Allows user to set names of members to values of valid inputs
+  //--------------------------------------------------------------------------
+  public void setMemberNameList()
+  {
+    String []list = new String[noOfMembers];
+                                 
+    for (int index = 0; index < noOfMembers; index++)
+      {
+        System.out.print("\tEnter the name of team member ");
+        System.out.print((index+1) + ":  ");
+        list[index] = inputName();
+      
+    // This checks if the name of member entered is the same with existing members, as this might cause confusion.
+        for (int n =0; n< index; n++)
+        {
+          String existingMember = list[n];
+          while (existingMember.equalsIgnoreCase(list[index]))
+          {
+            System.out.print("\n\tName already exists.\n\n\tEnter a different name: ");
+            list[index] = inputName();
+          }
+        }
+      }
+    memberNameList = list;
+  }
+  
   public void setVote(int[][] voteList)
   {
     memberVoteList = voteList;
   }
   
+  //-----------------------------------------------------------------------
+  // Allows users to input a valid name
+  // ----------------------------------------------------------------------
+  private String inputName()
+  {
+    Scanner scan = new Scanner(System.in);
+    String newName = scan.nextLine();
+    while (!validateName(newName))
+    {
+      System.out.print("\n\tInvalid name.\n"+
+                        "\tName has to be less than 30 characters long; \n"+
+                        "\tconsisted of only letters and numbers.\n"+
+                        "\n\tEnter a valid name: ");
+      newName = scan.nextLine();
+    }
+    return newName;
+  }
+
   public String getProjectName()
   {
     return projectName;
