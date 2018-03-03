@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class EnterVotes
 {
@@ -71,9 +72,9 @@ public class EnterVotes
             {
               do
               {
-                votesLists[a][b] = CreateProject.inputNumberWithPrompt("\t\tEnter " + projectWanted.getMemberName(a) 
-                                                                       +"’s points for " + projectWanted.getMemberName(b) 
-                                                                       + ":\t");
+                votesLists[a][b] = inputNumberWithPrompt("\t\tEnter " + projectWanted.getMemberName(a) 
+                                                         + "’s points for " + projectWanted.getMemberName(b) 
+                                                         + ":\t");
                 if (!votesValid(votesLists[a][b]))
                 {
                   System.out.println("\n\t\tThe points of a vote must be between 0 and 100 inclusive.\n");
@@ -146,6 +147,27 @@ public class EnterVotes
     
     return (votesTotal == 100);
   } 
+    
+  // ------------------------------------------------------------------
+  // Exception Handling (Note 17. Exception Handling: A Third Example)
+  // ------------------------------------------------------------------
+  private static int inputNumberWithPrompt(String aPrompt)
+  {
+    Scanner scan = new Scanner(System.in);
+    while (true) 
+    {
+      System.out.print(aPrompt);
+      try 
+      {
+        return scan.nextInt();
+      } 
+      catch (InputMismatchException e) 
+      {
+        scan.nextLine();
+        System.out.println("\n\tYou didn't enter a whole number. Try again: ");
+      }
+    }
+  }
   
   // ------------------------------------
   // Returns all existing project names.

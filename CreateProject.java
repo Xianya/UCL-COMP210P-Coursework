@@ -154,7 +154,7 @@ public class CreateProject
   // ------------------------------------------------------------------
   // Exception Handling (Note 17. Exception Handling: A Third Example)
   // ------------------------------------------------------------------
-  public static int inputNumberWithPrompt (String aPrompt)
+  private static int inputNumberWithPrompt(String aPrompt)
   {
     Scanner scan = new Scanner(System.in);
     while (true) 
@@ -245,8 +245,8 @@ public class CreateProject
       {
         vote += "," + getMemberName(m) + "," + memberVoteList[n][m];
       } 
-    }
-    
+    }  
+      
     return vote;
   }
   
@@ -270,6 +270,7 @@ public class CreateProject
         exist = true;
       }
     }
+      
     return exist;
   }
     
