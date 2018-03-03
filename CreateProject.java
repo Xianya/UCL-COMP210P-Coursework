@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class CreateProject
 {
@@ -12,122 +13,163 @@ public class CreateProject
   private String[] memberNameList;
   private int[][] memberVoteList;
   
-  //----------------------------------------------------------------
-  // This constructor allows the user to create a project with at 
-  // most 20 team members.
-  //----------------------------------------------------------------
+  
+  //--------------------------------------------------------------------------
+  // This constructor takes in user input and initialises the project name, 
+  // number of members, name of members accordingly; setting the values of 
+  // votes to default, to be inputted later.
+  // -------------------------------------------------------------------------
   public CreateProject()
   {
     Scanner scan = new Scanner(System.in);
-    String empty;
     memberVoteList = null;
-
-    System.out.print("\n\tEnter the project name: ");
-    projectName = scan.nextLine();
-    
-    while (!validateName(projectName))
+    setProjectName();
+    while (projectExist())
     {
-      System.out.print("\tInvalid project name.\n"+
-                        "\tName has to be less than 30 characters long; \n"+
-                        "\tconsisted of only letters and numbers.\n"+
-                        "\tEnter a valid project name: ");
-      projectName = scan.nextLine();
-    }
-    
-    while (nameExist(projectName))
-    {
-      System.out.print("\tThis project name already exist.\n"+
-                       "\tEnter a different project name: ");
-      projectName = scan.nextLine();
-    }
-        
-      
-    System.out.print("\tEnter the number of team members: "); 
-    noOfMembers = scan.nextInt();
-      
-    while (!validateNoOfMembers(noOfMembers))
-    {
-      System.out.print("\tInvalid number of team members.\n"+
-                       "\tNumber of team members has to be between 3 and 20.\n"+
-                       "\tEnter the number of team members again: ");
-      noOfMembers = scan.nextInt();
-    }
-      
-    memberNameList = new String[noOfMembers];
-      
-    empty = scan.nextLine(); //-------------------------------------
-                             // This deals with the Line Terminator 
-                             // so the first item of the following 
-                             // for loop is not set to empty.
-                             // ------------------------------------
-                                 
-    for (int index = 0; index < memberNameList.length; index++)
-      {
-        System.out.print("\t\tEnter the name of team member ");
-        System.out.print((index+1) + ":  ");
-        memberNameList[index] = scan.nextLine();
-      
-        while (!validateName(memberNameList[index]))
-        {
-          System.out.print("\tInvalid name.\n"+
-                           "\tName has to be less than 30 characters long; \n"+
-                           "\tconsisted of only letters and numbers.\n"+
-                           "\t\tEnter a valid name: ");
-          memberNameList[index] = scan.nextLine();
-        }
-      }           
- 
+      System.out.print("\n\tThis project name already exist.\n");
+      setProjectName();
+    } 
+    setNoOfMembers();
+    setMemberNameList();           
   }
   
   //---------------------------------------------------------------------
   // This constructor creates a default CreateProject object when the 
-  // constructor is called with 0.
+  // constructor is called with an integer, normally used with 0.
   //---------------------------------------------------------------------
   public CreateProject(int n)
   {
-    final int VALID = 0;
-    if (n==VALID)
-    {
-      projectName = "";
-      noOfMembers = 0;
-      memberNameList = null;
-    }
-    else
-    {
-      System.out.print("Fatal error: Constructor passed malformed argument.");
-      System.exit(1);
-    }
+    projectName = "";
+    noOfMembers = 0;
+    memberNameList = null;
+    memberVoteList = null;
   }
   
-  //-------------------------------------------------------------------
-  // This is a copy constructor that can be used to create a separate,
-  // independent object with the same data as the argument object.
-  // ------------------------------------------------------------------
+  //-------------------
+  // Copy constructor.
+  // ------------------
   public CreateProject(CreateProject project)
   {
     projectName = project.projectName;
     noOfMembers = project.noOfMembers;
     memberNameList = new String [project.noOfMembers];
-    for (int n = 0; n < memberNameList.length; n++)
+      
+    for (int n = 0; n < project.noOfMembers; n++)
     {
       memberNameList[n] = project.memberNameList[n];
     }
+      
+    if (project.memberVoteList == null)
+    {
+      memberVoteList = null;
+    }
+    else
+    {
+      memberVoteList = new int [project.noOfMembers][project.noOfMembers];
+      for (int n = 0; n < project.noOfMembers; n++)
+      {
+        for (int m = 0; m < project.noOfMembers; m++)
+        {
+          memberVoteList [n][m] = project.memberVoteList[n][m];
+        }
+      }
+    }
   }
-
-  //------------------------------------------------------------------
-  // This setProjectName mutator method is included to allow users to 
-  // set the name of the project.
-  // -----------------------------------------------------------------
+  
+  //-------------------------------------------------
+  // Set project name to the value of a valid input.
+  //-------------------------------------------------
   public void setProjectName()
   {
-    Scanner scan = new Scanner(System.in);
-    String newProjectName = scan.nextLine();
-    projectName = newProjectName;
+    System.out.print("\n\tEnter the project name: ");
+    projectName = inputName();
   }
-    
+  
+  //---------------------------------------------------------------
+  // Set the number of team members to the value of a valid input.
+  //---------------------------------------------------------------
+  public void setNoOfMembers()
+  {
+    int number = inputNumberWithPrompt("\tEnter the number of team members: "); 
+          
+    while (!validateNoOfMembers(number))
+    {
+      number = inputNumberWithPrompt("\n\tInvalid number of team members.\n"+
+                                     "\tNumber of team members has to be between 3 and 20.\n"+
+                                     "\n\tEnter a valid number: ");
+    } 
+    noOfMembers = number;
+  }
+  
+  //-----------------------------------------------------
+  // Set the names of members to values of valid inputs.
+  //-----------------------------------------------------
+  public void setMemberNameList()
+  {
+    String []list = new String[noOfMembers];
+                                 
+    for (int index = 0; index < noOfMembers; index++)
+      {
+        System.out.print("\tEnter the name of team member ");
+        System.out.print((index+1) + ":  ");
+        list[index] = inputName();
+      
+        // This checks if the name of the member entered is the same as others' in the team.
+        for (int n =0; n< index; n++)
+        {
+          String existingMember = list[n];
+          while (existingMember.equalsIgnoreCase(list[index]))
+          {
+            System.out.print("\n\tName already exists.\n\n\tEnter a different name: ");
+            list[index] = inputName();
+          }
+        }
+      }
+    memberNameList = list;
+  }
+  
   public void setVote(int[][] voteList)
   {
     memberVoteList = voteList;
+  }
+  
+  // ------------------------------------
+  // Allows users to input a valid name.
+  // ----------------------------------- -
+  private String inputName()
+  {
+    Scanner scan = new Scanner(System.in);
+    String newName = scan.nextLine();
+    while (!validateName(newName))
+    {
+      System.out.print("\n\tInvalid name.\n"+
+                       "\tName has to be less than 30 characters long; \n"+
+                       "\tconsisted of only letters and numbers.\n"+
+                       "\n\tEnter a valid name: ");
+      newName = scan.nextLine();
+    }
+    return newName;
+  }
+  
+  // ------------------------------------------------------------------
+  // Exception Handling (Note 17. Exception Handling: A Third Example)
+  // ------------------------------------------------------------------
+  public static int inputNumberWithPrompt (String aPrompt)
+  {
+    Scanner scan = new Scanner(System.in);
+    while (true) 
+    {
+      System.out.print(aPrompt);
+      try 
+      {
+        return scan.nextInt();
+      } 
+      catch (InputMismatchException e) 
+      {
+        scan.nextLine();
+        System.out.println("\n\tYou didn't enter a whole number. Try again: ");
+      }
+    }
   }
   
   public String getProjectName()
@@ -135,17 +177,14 @@ public class CreateProject
     return projectName;
   }
   
-  
   public int getMemberNo()
   {
     return noOfMembers;
   }
   
-  //------------------------------------------------------------------
-  // If n is a positive number and does not exceed the number of 
-  // total members, then this returns the name of the member at the 
-  // nth position of the array.
-  //------------------------------------------------------------------
+  // -----------------------------------------
+  // Returns the name of the member if valid.
+  // -----------------------------------------
   public String getMemberName(int n)
   {
     if (n >= 0 && n < noOfMembers)
@@ -154,30 +193,34 @@ public class CreateProject
     }
     else
     {
-      return null;
+      fatalError("Invalid number of members passed to the argument.");
+      return "";
     }  
   }
   
-  public String toStringOnesVotes(int n)
+  // ------------------------------------------------------------------------
+  // Returns the value of the nth person's vote for the mth person if valid.
+  // ------------------------------------------------------------------------
+  public int getMemberVote(int n, int m)
   {
-    String onesVote = memberNameList[n] + ",";
-    for (int m = 0; m < noOfMembers; m++)
+    final int ERROR = 0;
+    if (n >= 0 && m >= 0 && n< noOfMembers && m< noOfMembers && n!=m)
     {
-      if (m != n)
-      {
-        onesVote += getMemberName(m) + "," + memberVoteList[n][m] + ",";
-      } 
+      return memberVoteList[n][m];
     }
-    return onesVote;
+    else 
+    {
+      fatalError("Invalid number passed to the argument.");
+      return ERROR;
+    }
   }
   
-  
-  //--------------------------------------------------------------------------
-  // This compares two projects to see if they have the same project names
-  //--------------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  // Return the boolean value that whether the project names are the same.
+  //-----------------------------------------------------------------------
   public boolean equals(CreateProject otherProject)
   {
-    if (projectName.equals(otherProject.projectName))
+    if (projectName.equalsIgnoreCase(otherProject.projectName))
     {
         return true;
     }
@@ -189,23 +232,66 @@ public class CreateProject
  
   public String toString()
   {
-    String output1 = getProjectName() + "," + getMemberNo() + ",";
+    String output1 = getProjectName() + "," + getMemberNo();
     String output2 = "";
     String output3 = "";
     
-    for (int m = 0; m < noOfMembers; m++)
+    for (int n = 0; n < noOfMembers; n++)
     {
-      output2 += getMemberName(m) + ",";
+      output2 += "," + getMemberName(n);
     }
     
-    for (int m = 0; m < noOfMembers; m++)
+    if (memberVoteList != null)
     {
-      output3 += toStringOnesVotes(m);
+      for (int n = 0; n<noOfMembers; n++)
+      {
+        output3 += "," + toStringVotes(n);        
+      }
     }
-
     return (output1 + output2 + output3);
   }
   
+  private String toStringVotes(int n)
+  {
+    String vote = memberNameList[n];
+    for (int m = 0; m < noOfMembers; m++)
+    {
+      if (m != n)
+      {
+        vote += "," + getMemberName(m) + "," + memberVoteList[n][m];
+      } 
+    }
+    
+    return vote;
+  }
+  
+  //--------------------------------------------------------------------
+  // Checks if project name entered by the user matches with existing
+  // project names.
+  //--------------------------------------------------------------------
+  public boolean projectExist()
+  {
+    boolean exist = false;
+    int count;
+    CreateProject existingProject = new CreateProject(0);
+    AllData checkData = new AllData();
+    count = checkData.getCount();
+    
+    for (int n = 0; n < count; n++)
+    {
+      existingProject = checkData.getProject(n);
+      if (this.equals(existingProject))
+      {
+        exist = true;
+      }
+    }
+    return exist;
+  }
+
+  //--------------------------------------------------
+  // Validate the names to alphanumerical characters
+  // and of length within a sensible range.
+  //--------------------------------------------------
   private boolean validateName(String name)
   {
     boolean valid = true;
@@ -222,6 +308,9 @@ public class CreateProject
     return valid;
   }
   
+  //--------------------------------------
+  // Validate the number of team members.
+  //--------------------------------------
   private boolean validateNoOfMembers(int n)
   {
     boolean valid = false;
@@ -232,29 +321,10 @@ public class CreateProject
     return valid;
   }
   
-  //----------------------------------------------------------------
-  // Checks if the project name matches with existing project names
-  //----------------------------------------------------------------  
-  private boolean nameExist(String name)  
+  private static void fatalError(String errorMessage)
   {
-    boolean exist = false;
-    int count;
-    String existingName;
-    CreateProject existingProject = new CreateProject(0);
-    AllData checkData = new AllData();
-    count = checkData.getCount();
-    
-    for (int n = 0; n < count; n++)
-    {
-      existingProject = checkData.getProject(n);
-      existingName = existingProject.getProjectName();
-      if (name.equalsIgnoreCase(existingName))
-      {
-        exist = true;
-      }
-    }
-    
-    return exist;
+    System.out.println("Fatal error: "+ errorMessage);
+    System.exit(1);
   }
   
 }

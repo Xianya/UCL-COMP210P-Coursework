@@ -4,124 +4,134 @@ public class EnterVotes
 {
   private int[][] votesLists;
   private int projectNo;
-  
+    
   // -----------------------
   // The constructor method
   // -----------------------
   public EnterVotes()
   {
     AllData checkData = new AllData();
-    int count = checkData.getCount();
     
-    // Make sure there exist a project. 
-    if (count == 0)
+    if (checkData.getCount() == 0) // Avoid entering votes when no project existed.
     {
       System.out.println("\n\tNo project was created." +
-                         "\n\tPlease create a project to enter vote.");
+                         "\n\tPlease create projects first.");
+      votesLists = null;
+      projectNo = 0;
     }
     else
     {
-      enterVotes();
-    }  
-  } 
-  
-  // -----------------------------------------
-  // Get the project wanted and enter votes.
-  // -----------------------------------------
-  public void enterVotes()
-  {
-    Scanner scan = new Scanner(System.in);
-    CreateProject projectWanted = new CreateProject(0);
+      Scanner scan = new Scanner(System.in);
+      CreateProject projectWanted = new CreateProject(0);
     
-    System.out.print("\n\tEnter the project name: ");
-    projectWanted.setProjectName();
-
-    //---------------------------------------------------------------
-    // Check if the project name entered matches with existing 
-    // project names; if not, the user would be asked to enter again.
-    //---------------------------------------------------------------
-    CreateProject existingProject = new CreateProject(0);
-    AllData findData = new AllData();
-    boolean projectExisted = false;
-
-    while (projectExisted == false)
-    {
-      for (int n = 0; n < findData.getCount(); n++)
-      {
-        existingProject = findData.getProject(n);
-        if (existingProject.equals(projectWanted))
-        {
-          projectExisted = true;
-          projectWanted = new CreateProject(existingProject); //get the project
-          projectNo = n; //get the project position in Alldata class
-        }
-      }
-
-      if (projectExisted == false)
+      // Show all existing project names.
+      System.out.println("\n\tExisting project(s): \n\t" +
+                         ExistingProjectNames());
+      projectWanted.setProjectName();
+      
+      while (!projectWanted.projectExist())
       {
         System.out.print("\n\tThis project doesn't exist.\n"+
-                         "\tEnter an existing project name: ");
+                         "\tEnter an existing project name.\n");
         projectWanted.setProjectName();
       }
-    }
-
-    System.out.println("\tThere are " + projectWanted.getMemberNo() 
-                         + " team members.\n");
-
-    // Allows user to enter votes
-    int countMember = projectWanted.getMemberNo();
-    votesLists = new int[countMember][countMember];
-
-    for (int a = 0; a < countMember; a++)
-    {
-      System.out.println("\tEnter " + projectWanted.getMemberName(a) 
-                         + "’s votes, points must add up to 100: \n");
-
-      do 
+      
+      // Get the matching project we want.
+      for (int n = 0; n<checkData.getCount();n++)
       {
-        for (int b = 0; b < countMember; b++)
+        CreateProject existingProject = checkData.getProject(n);
+        if (projectWanted.equals(existingProject))
         {
-          if (b != a) /*if the number of team member is 1, this if statement will never be executed, 
-                       * and thus no vote will be stored. So the vote will never be equal to 100 
-                       * and the do...while statement won't end.*/
+          projectWanted = new CreateProject(existingProject);
+          projectNo = n;
+        }
+      }
+
+      System.out.println("\tThere are " + projectWanted.getMemberNo() 
+                           + " team members.\n");
+      
+      // Enter votes in the 2-d array.
+      int countMember = projectWanted.getMemberNo();
+      votesLists = new int[countMember][countMember];
+ 
+      for (int a = 0; a < countMember; a++)
+      {
+        System.out.println("\tEnter " + projectWanted.getMemberName(a) 
+                           + "’s votes, points must add up to 100: \n");
+ 
+        do
+        {
+          for (int b = 0; b < countMember; b++)
           {
-            do
+            if (b == a)
             {
-              System.out.print("\t\tEnter " + projectWanted.getMemberName(a) 
-                               +"’s points for " + projectWanted.getMemberName(b) + ":\t");
-              votesLists[a][b] = scan.nextInt();
-
-              if (!votesValid(votesLists[a][b]))
+              votesLists[a][b] = 0;
+            }
+            else
+            {
+              do
               {
-                System.out.println("\t\tThe points of a vote must be between 0 and 100 inclusive.");
-              }
-            } while (!votesValid(votesLists[a][b]));
-          }   
-        }
-
-        if (!votesHundred(votesLists[a]))
-        {
-          System.out.println("\tVotes do not add up to 100.\n"+
-                             "\n\tEnter Again:");
-        }
-      } while (!votesHundred(votesLists[a]));  
-
-      System.out.println();
+                votesLists[a][b] = CreateProject.inputNumberWithPrompt("\t\tEnter " + projectWanted.getMemberName(a) 
+                                                                       +"’s points for " + projectWanted.getMemberName(b) 
+                                                                       + ":\t");
+                if (!votesValid(votesLists[a][b]))
+                {
+                  System.out.println("\n\t\tThe points of a vote must be between 0 and 100 inclusive.\n");
+                }
+              } while (!votesValid(votesLists[a][b]));
+            }   
+          }
+ 
+          if (!votesHundred(votesLists[a]))
+          {
+            System.out.println("\n\tVotes do not add up to 100.\n"+
+                               "\n\tEnter Again:");
+          }
+        } while (!votesHundred(votesLists[a]));  
+ 
+        System.out.println();
+      }
+ 
     }
-
-    // Set the votes data in alldata
-    AllData dataWithVotes = new AllData();
-    dataWithVotes.setVote(projectNo, votesLists);
   }
   
-  // ---------------------------------------------------
-  // Check the vote entered was within a valid range
-  // ---------------------------------------------------
+  // ----------------------------------------------
+  // Returns the project position in Alldata class.
+  // ----------------------------------------------
+  public int getProjectNo()
+  {
+    return projectNo;
+  }
+  
+  // ----------------------------------------------------------
+  // Returns the list of votes (not used in this deliverable).
+  // ----------------------------------------------------------
+  public int[][] getVotesLists()
+  {
+    int [][]list = null;
+    if (votesLists!=null)
+    {
+      int size = votesLists.length;
+      list = new int [size][size];
+      for (int n = 0; n<size; n++)
+      {
+        for(int m = 0; m<size; m++)
+        {
+          list[n][m] = votesLists[n][m];
+        }
+      }
+    }
+    return list;
+  }
+  
+  // ----------------------------------------------
+  // Check the vote entered was between 0 and 100.
+  // ----------------------------------------------
   private boolean votesValid(int theVote)
   {
     return (theVote >= 0 && theVote <= 100);
   }
-  
+
   // -------------------------------------------
   // Check the votes entered were equal to 100
   // -------------------------------------------
@@ -136,5 +146,20 @@ public class EnterVotes
     
     return (votesTotal == 100);
   } 
-    
+  
+  // ------------------------------------
+  // Returns all existing project names.
+  // ------------------------------------
+  private static String ExistingProjectNames()
+  {
+    AllData checkData = new AllData();
+    String output = "";
+    for (int n=0; n<checkData.getCount(); n++)
+    {
+      CreateProject existingProject = checkData.getProject(n);
+      output += existingProject.getProjectName() + " ";
+    }
+    return output;
+  }
+  
 }

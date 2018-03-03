@@ -1,24 +1,18 @@
 public class AllData
 {
+  public static final int MAX_PROJECTS = 100;
   private static CreateProject [] allData;
   private static int count;
   
   //---------------------------------------------------------------
-  // This reads in 0, and sets the default object of the class and 
-  // allows information of up to 100 projects to be stored.
+  // This reads in an integer, normally 0, and sets the default 
+  // object of the class and allows information of up to 100 
+  // projects to be stored.
   //--------------------------------------------------------------- 
   public AllData(int n)
   {
-    final int VALID = 0;
-    if (n == VALID)
-    {
-      allData = new CreateProject [100];
+      allData = new CreateProject [MAX_PROJECTS];
       count = 0;
-    }
-    else
-    {
-      fatalError("Constructor passed malformed argument.");
-    }
   }
   
   //----------------------------------------------------------------
@@ -43,18 +37,18 @@ public class AllData
   
   public void setVote(int projectNo, int[][] voteList)
   {
-    if (validateNo(projectNo))
+    if (voteList != null)
     {
-      CreateProject projectVote = new CreateProject(0);
-      projectVote = allData[projectNo];
-      projectVote.setVote(voteList); 
-    }
-    else
-    {
-      fatalError("Invalid number of projects passed as the argument.");
+      if (validateNo(projectNo))
+      {
+        allData[projectNo].setVote(voteList); 
+      }
+      else
+      {
+        fatalError("Invalid number of projects passed as the argument.");
+      }
     }
   }  
-  
   
   public int getCount()
   {
@@ -96,8 +90,10 @@ public class AllData
     return (output2); 
   }
   
-  
-  public static void fatalError(String errorMessage)
+  // -------------------------------------------------------------
+  // from Project.java in Deliverable 1: Feedback and Feedforward
+  // -------------------------------------------------------------
+  private static void fatalError(String errorMessage)
   {
     System.out.println("Fatal error: "+ errorMessage);
     System.exit(1);

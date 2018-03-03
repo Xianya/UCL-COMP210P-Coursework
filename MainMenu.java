@@ -3,24 +3,15 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 
-
 public class MainMenu
-{
-  
+{  
   private AllData allData;
   
-  // -----------------------
-  // The constructor method
-  // -----------------------
   public MainMenu()
   {
     allData = new AllData(0);
   }
-    
-  // --------------------------------------
-  // Show the panel and take in the option 
-  // and carry out other class
-  // ----------------------- --------------
+  
   public void mainMenu()
   {
     Scanner scan = new Scanner(System.in);
@@ -44,7 +35,7 @@ public class MainMenu
 
     } while (!validOption(optionInput));
     
-    option = optionInput.charAt(0); // make the option ready to be used in switch
+    option = optionInput.charAt(0);
               
     switch (option)
     {
@@ -59,7 +50,8 @@ public class MainMenu
         break;
         
       case 'v':
-        EnterVotes enterVotes = new EnterVotes();
+        EnterVotes createVotes = new EnterVotes();
+        allData.setVote(createVotes.getProjectNo(), createVotes.getVotesLists());
         backToMenu();
         break;
       
@@ -73,11 +65,11 @@ public class MainMenu
         try 
         {
             outputStream
-                  = new PrintWriter(new FileOutputStream("stupidallocator.txt"));
+                  = new PrintWriter(new FileOutputStream("data.txt"));
         } 
         catch (FileNotFoundException e) 
         {
-            System.out.println("Error opening the file stupidallocator.txt.");
+            System.out.println("Error opening the file data.txt.");
             System.exit(0);
         }
         
@@ -85,16 +77,13 @@ public class MainMenu
         outputStream.println(allData.toString());
         outputStream.close();
         
-        System.out.println("\tText written to \"stupidallocator.txt\".");
+        System.out.println("\tText written to \"data.txt\".");
 
         System.out.println("\tPROGRAM ENDED\n");
         System.exit(0);
     }
   }
   
-  // ---------------------
-  // Show the menu panel. 
-  // ---------------------
   private static void outPut()
   {
     System.out.println("\n\t ------------------------------------- \n"+
@@ -108,26 +97,22 @@ public class MainMenu
                          "\t ------------------------------------- \n");
   }
   
-  // ----------------------------------
-  // Bring the user back to main menu.
-  // ----------------------------------
-  public void backToMenu()
+  private void backToMenu()
   {
     Scanner scan = new Scanner(System.in);
     String option;
     System.out.print("\n\tPress any key followed by <Enter> to return to the main menu: ");
-    option = scan.nextLine(); //--------------------------------
-                               // This allows the user to press
-                               // return to return to main menu 
-                               // as well as any other keys.
-                               //--------------------------------
+    option = scan.nextLine(); //------------------------------------------------------
+                              // This allows the user to press "return" to go back to 
+                              // main menu as well as any other keys.
+                              //------------------------------------------------------
     mainMenu();
   }
   
-  // --------------------------------------------------------------
-  // Make sure the input option is only a letter (not even a word) 
-  // of the 5 choice which ignores case.
-  // --------------------------------------------------------------
+  // ----------------------------------------------------------------
+  // Validate the input option to only one of the letters out of the 
+  // five choices ignoring case.
+  // ----------------------------------------------------------------
   private static boolean validOption(String input)
   {
     return ((input.equals("a")) || (input.equals("c")) ||

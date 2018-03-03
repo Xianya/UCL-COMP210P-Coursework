@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 public class About
 {
   public static void about()
