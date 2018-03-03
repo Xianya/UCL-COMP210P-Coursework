@@ -214,21 +214,6 @@ public class CreateProject
       return ERROR;
     }
   }
-  
-  //-----------------------------------------------------------------------
-  // Return the boolean value that whether the project names are the same.
-  //-----------------------------------------------------------------------
-  public boolean equals(CreateProject otherProject)
-  {
-    if (projectName.equalsIgnoreCase(otherProject.projectName))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-  }
  
   public String toString()
   {
@@ -287,7 +272,22 @@ public class CreateProject
     }
     return exist;
   }
-
+    
+  //-----------------------------------------------------------------------
+  // Return the boolean value that whether the project names are the same.
+  //-----------------------------------------------------------------------
+  public boolean equals(CreateProject otherProject)
+  {
+    if (projectName.equalsIgnoreCase(otherProject.projectName))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+  }
+  
   //--------------------------------------------------
   // Validate the names to alphanumerical characters
   // and of length within a sensible range.
