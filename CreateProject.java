@@ -321,6 +321,9 @@ public class CreateProject
     return valid;
   }
   
+  // -------------------------------------------------------------
+  // from Project.java in Deliverable 1: Feedback and Feedforward
+  // -------------------------------------------------------------
   private static void fatalError(String errorMessage)
   {
     System.out.println("Fatal error: "+ errorMessage);
