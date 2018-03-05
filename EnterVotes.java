@@ -6,9 +6,7 @@ public class EnterVotes
   private int[][] votesLists;
   private int projectNo;
     
-  // -----------------------
-  // The constructor method
-  // -----------------------
+
   public EnterVotes()
   {
     AllData checkData = new AllData();
@@ -105,7 +103,7 @@ public class EnterVotes
   }
   
   // ----------------------------------------------------------
-  // Returns the list of votes (not used in this deliverable).
+  // Returns the 2d array of votes.
   // ----------------------------------------------------------
   public int[][] getVotesLists()
   {
