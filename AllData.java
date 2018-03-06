@@ -39,7 +39,7 @@ public class AllData
   {
     if (voteList != null)
     {
-      if (validateNo(projectNo))
+      if (Controller.validateNo(projectNo))
       {
         allData[projectNo].setVote(voteList);
       }
@@ -63,7 +63,7 @@ public class AllData
   public Project getProject(int n)
   {
     Project project = new Project(0);
-    if (validateNo(n))
+    if (Controller.validateNo(n))
     {
       project = allData[n];
     }
@@ -90,15 +90,5 @@ public class AllData
     return (output2);
   }
 
-
-  private boolean validateNo(int n)
-  {
-    boolean valid = false;
-    if (n >= 0 && n < count)
-    {
-      valid = true;
-    }
-    return valid;
-  }
 
 }
