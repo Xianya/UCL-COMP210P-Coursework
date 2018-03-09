@@ -11,17 +11,12 @@ public class Project
   // number of members, name of members accordingly; setting the values of
   // votes to default, to be inputted later.
   // -------------------------------------------------------------------------
-  public Project()
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList)
   {
+    projectName = theProjectName;
+    noOfMembers = theNoOfMembers;
+    memberNameList = theMemberNameList;
     memberVoteList = null;
-    setProjectName();
-    while (projectExist())
-    {
-      System.out.print("\n\tThis project name already exist.\n");
-      setProjectName();
-    }
-    setNoOfMembers();
-    setMemberNameList();
   }
 
   //---------------------------------------------------------------------
@@ -70,58 +65,44 @@ public class Project
   //-------------------------------------------------
   // Set project name to the value of a valid input.
   //-------------------------------------------------
-  public void setProjectName()
+  public void setProjectName(String theProjectName)
   {
-    System.out.print("\n\tEnter the project name: ");
-    projectName = Controller.inputName();
+    projectName = theProjectName;
   }
 
   //---------------------------------------------------------------
   // Set the number of team members to the value of a valid input.
   //---------------------------------------------------------------
-  public void setNoOfMembers()
+  public void setNoOfMembers(int theNoOfMembers)
   {
-    int number = Controller.inputNumberWithPrompt("\tEnter the number of team members: ");
-
-    while (!Controller.validateNoOfMembers(number))
-    {
-      number = Controller.inputNumberWithPrompt("\n\tInvalid number of team members.\n"+
-                                     "\tNumber of team members has to be between 3 and 20.\n"+
-                                     "\n\tEnter a valid number: ");
-    }
-    noOfMembers = number;
+    noOfMembers = theNoOfMembers;
   }
 
   //-----------------------------------------------------
   // Set the names of members to values of valid inputs.
   //-----------------------------------------------------
-  public void setMemberNameList()
+  public void setMemberNameList(String [] list)
   {
-    String []list = new String[noOfMembers];
-
-    for (int index = 0; index < noOfMembers; index++)
-      {
-        System.out.print("\tEnter the name of team member ");
-        System.out.print((index+1) + ":  ");
-        list[index] = Controller.inputName();
-
-        // This checks if the name of the member entered is the same as others' in the team.
-        for (int n =0; n< index; n++)
-        {
-          String existingMember = list[n];
-          while (existingMember.equalsIgnoreCase(list[index]))
-          {
-            System.out.print("\n\tName already exists.\n\n\tEnter a different name: ");
-            list[index] = Controller.inputName();
-          }
-        }
-      }
     memberNameList = list;
   }
 
-  public void setVote(int[][] voteList)
+  public void setVotes(int[][] voteList)
   {
-    memberVoteList = voteList;
+    if (voteList!=null)
+    {
+      if (voteList.length == noOfMembers)
+      {
+        memberVoteList = voteList;
+      }
+      else
+      {
+        Controller.fatalError("Votes and project do not match.");
+      }
+    }
+    else
+    {
+      memberVoteList = null;
+    }
   }
 
   public String getProjectName()
@@ -200,30 +181,6 @@ public class Project
     }
 
     return vote;
-  }
-
-  //--------------------------------------------------------------------
-  // Checks if project name entered by the user matches with existing
-  // project names.
-  //--------------------------------------------------------------------
-  public boolean projectExist()
-  {
-    boolean exist = false;
-    int count;
-    Project existingProject = new Project(0);
-    AllData checkData = new AllData();
-    count = checkData.getCount();
-
-    for (int n = 0; n < count; n++)
-    {
-      existingProject = checkData.getProject(n);
-      if (this.equals(existingProject))
-      {
-        exist = true;
-      }
-    }
-
-    return exist;
   }
 
   //-----------------------------------------------------------------------
