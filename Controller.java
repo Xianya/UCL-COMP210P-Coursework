@@ -16,22 +16,23 @@ public class Controller
   {
     return ((input.equals("a")) || (input.equals("c")) ||
             (input.equals("v")) || (input.equals("s")) ||
-            (input.equals("q")));
+            (input.equals("q")) || (input.equals("d")) || (input.equals("x")));
   }
 
   // ------------------------------------
   // Allows users to input a valid name.
   // ----------------------------------- -
-  public static String inputName()
+  public static String inputName(String aPrompt)
   {
     Scanner scan = new Scanner(System.in);
+    System.out.print(aPrompt);
     String newName = scan.nextLine();
     while (!validateName(newName))
     {
-      System.out.print("\n\tInvalid name.\n"+
-                       "\tName has to be less than 30 characters long; \n"+
-                       "\tconsisted of only letters and numbers.\n"+
-                       "\n\tEnter a valid name: ");
+      System.out.println("\n\tInvalid name.\n"+
+                         "\tName has to be less than 30 characters long; \n"+
+                         "\tconsisted of only letters and numbers.\n");
+      System.out.print(aPrompt);
       newName = scan.nextLine();
     }
     return newName;
@@ -91,15 +92,6 @@ public class Controller
     return valid;
   }
 
-  // -------------------------------------------------------------
-  // from Project.java in Deliverable 1: Feedback and Feedforward
-  // -------------------------------------------------------------
-  public static void fatalError(String errorMessage)
-  {
-    System.out.println("Fatal error: "+ errorMessage);
-    System.exit(1);
-  }
-
   // ----------------------------------------------
   // Check the vote entered was between 0 and 100.
   // ----------------------------------------------
@@ -124,15 +116,13 @@ public class Controller
   }
 
 
-  public static boolean validateNo(int n)
+  // -------------------------------------------------------------
+  // from Project.java in Deliverable 1: Feedback and Feedforward
+  // -------------------------------------------------------------
+  public static void fatalError(String errorMessage)
   {
-    boolean valid = false;
-    AllData allData = new AllData();
-    if (n >= 0 && n < allData.getCount())
-    {
-      valid = true;
-    }
-    return valid;
+    System.out.println("Fatal error: "+ errorMessage);
+    System.exit(1);
   }
 
 }
