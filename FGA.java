@@ -68,10 +68,10 @@ public class FGA
         backToMenu();
         break;
 
-      case 'x':
+      /*case 'x':
         changeProject();
         backToMenu();
-        break;
+        break;*/
         
       case 'd':
         deleteProject();
@@ -82,7 +82,7 @@ public class FGA
         Votes votes = enterVotes();
         try
         {
-          projectList[votes.getProjectNo()].setVotes(votes.getVotesLists());
+          projectList[votes.getProjectPosition()].setVotes(votes.getVotesLists());
         }
         catch (NullPointerException e)
         {
@@ -93,6 +93,7 @@ public class FGA
         break;
 
       case 's':
+        showProject();
         backToMenu();
         break;
 
@@ -109,7 +110,6 @@ public class FGA
             System.exit(0);
         }
 
-        System.out.println("\tWriting to file.");
         outputStream.print(this.toString());
         outputStream.close();
 
@@ -140,7 +140,7 @@ public class FGA
                          "\t|                                     |\n"+
                          "\t|  About (A)                          |\n"+
                          "\t|  Creat Project (C)                  |\n"+
-                         "\t|  Change Project Details(X)          |\n"+
+                         /*"\t|  Change Project Details (X)         |\n"+*/
                          "\t|  Delete Project (D)                 |\n"+
                          "\t|  Enter Votes (V)                    |\n"+
                          "\t|  Show Project (S)                   |\n"+
@@ -209,20 +209,10 @@ public class FGA
     int [][] votesLists = null;
     if (count !=0) // Avoid entering votes when no project existed.
     {
-      Project projectWanted = new Project();
-      projectWanted = getProjectWithPrompt("enter votes");
-             
-      // Get the matching project we want.
-      for (int n = 0; n<count;n++)
-      {
-        Project existingProject = projectList[n];
-        if (projectWanted.equals(existingProject))
-        {
-          projectWanted = new Project(existingProject);
-          theVotes.setProjectNo(n);
-        }
-      }
-
+      int position = getProjectPositionWithPrompt("Enter the project name: ");
+      theVotes.setProjectNo(position);
+      Project projectWanted = projectList[position];
+     
       System.out.println("\tThere are " + projectWanted.getMemberNo()
                            + " team members.\n");
 
@@ -270,84 +260,84 @@ public class FGA
     return theVotes;
   }
   
-  private void changeProject()
+  // ----------------
+  // Show Project
+  // ----------------
+  private void showProject() 
   {
-    if (count !=0)
+    boolean projectWithThreeMembersAndVotesExist = false;
+    for(int n = 0; n < count; n++)
     {
-      Scanner scan = new Scanner(System.in);
-      Project projectWanted = new Project();
-      projectWanted = getProjectWithPrompt("change");
-         
-      //give options what to change
-      String prompt = "\tWhat do you want to change?" +
-                      "\n\t1. The project Name " +
-                      "\tChoose an option(1,2,3 or 4): ";
-      
-      int action = Controller.inputNumberWithPrompt(prompt);
-      
-      switch (action)
+      if (projectList[n].getMemberNo() == 3 && 
+          projectList[n].getMemberVotesList() != null)
       {
-        case 1:
-          for (int n = 0; n<count;n++)
-          {
-            Project existingProject = projectList[n];
-            if (projectWanted.equals(existingProject))
-            {
-              String newProjectName = Controller.inputName("\n\tEnter the project name: ");
-              while (projectExist(newProjectName))
-              {
-                System.out.print("\tProject with the same name already exists.\n");
-                newProjectName = Controller.inputName("\n\tEnter the project name: ");
-              }
-              projectList[n].setProjectName(newProjectName);
-            }
-          }          
-          break;    
-      }
-              
-      //Completely change a project(cant have the same name)
-      /*for (int n = 0; n<count;n++)
-      {
-        Project existingProject = projectList[n];
-        if (projectWanted.equals(existingProject))
-        {
-          projectList[n] = createProject();
-        }
-      }*/
+        projectWithThreeMembersAndVotesExist = true;
+      }  
     }
-    else
+    
+    if ((count != 0) && projectWithThreeMembersAndVotesExist) 
+    {
+      int[][] votesWanted;
+      int position = getProjectPositionWithPrompt("Enter the project name: ");      
+      Project projectWanted = projectList[position];
+      votesWanted = projectWanted.getMemberVotesList();
+      
+      for(int a = 0; a < 3; a++)
+      {
+        for(int b = 0; b < 3; b++)
+          System.out.println(votesWanted[a][b]);
+      }
+      
+      double[][] ratio = new double[3][3];
+      ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];      
+      ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
+      ratio[1][0] = votesWanted[1][0]/(double)votesWanted[1][2];
+      ratio[1][2] = votesWanted[1][2]/(double)votesWanted[1][0];
+      ratio[2][0] = votesWanted[2][0]/(double)votesWanted[2][1];
+      ratio[2][1] = votesWanted[2][1]/(double)votesWanted[2][0];
+        
+      double[] share = new double[3];
+      share[0] = 1/(1+ratio[1][2]+ratio[2][1]);
+      share[1] = 1/(1+ratio[0][2]+ratio[2][0]);
+      share[2] = 1/(1+ratio[0][1]+ratio[1][0]);
+      
+      System.out.println("\tThere are 3 team members.");
+      System.out.println("\n\tThe point allocation based on votes is: \n");
+      for(int n = 0; n < 3; n++)
+      {
+        System.out.println("\t\t" + projectWanted.getMemberName(n) +
+                           ":\t" + share[n]*100);
+      }
+    
+    }
+    else if (count == 0)
     {
       System.out.println("\n\tNo project was created." +
                          "\n\tPlease create projects first.");
     }
+    else
+    {
+      System.out.println("\n\tThere is no project with 3 members and votes." +
+                         "\n\tPlease create projects or enter votes first.");
+    }
   }
-  
+    
   private void deleteProject()
   {
     if (count !=0)
     {
-      Project projectWanted = new Project();
-      projectWanted = getProjectWithPrompt("delete");
-
-      // Delete the project and move the position of latter projects forward.
-      for (int n = 0; n<count;n++)
+      int position = getProjectPositionWithPrompt("Enter the name of the project you want to delete: ");
+      projectList[position] = null;
+        
+      //move projects forward to fill the blank
+      if (count > 1 && (position != count - 1))
       {
-        Project existingProject = projectList[n];
-        if (projectWanted.equals(existingProject))
+        for(int x = 0; x < (count - position -1); x++)
         {
-          projectList[n] = null;
-          
-          //move projects forward to fill the blank
-          if (count > 1 && (n != count - 1))
-          {
-            for(int x = 0; x < (count - n -1); x++)
-            {
-              projectList[n - 1] =  projectList[n];
-            }
-            projectList[count - 1] = null;
-          }          
+          projectList[position - 1] =  projectList[position];
         }
-      }
+        projectList[count - position] = null;
+      }         
     }
     else
     {
@@ -444,41 +434,57 @@ public class FGA
     inputStream.close( );
   }
   
-  private Project getProjectWithPrompt(String aim)
+  private int getProjectPositionWithPrompt(String aPrompt)
   {
     Project projectWanted = new Project();
     String projectName;
-
+    int position = -1;
+    
     // Show all existing project names.
-    System.out.println("\n\tExisting project(s): \n\t" +
-                         toStringProjectNames());
-    projectName = Controller.inputName("\n\tEnter the name of the project you want to " 
-                                        + aim + ": ");
+    System.out.println(toStringProjectsBrief());
+    projectName = Controller.inputName("\n\t" + aPrompt);
 
     while (!projectExist(projectName))
     {
       System.out.print("\n\tThis project doesn't exist.\n"+
                        "\tEnter an existing project name.\n");
-      projectName = Controller.inputName("\n\tEnter the name of the project you want to " 
-                                         + aim + ":");
+      projectName = Controller.inputName("\n\t" + aPrompt);
     }
     projectWanted.setProjectName(projectName);
-
-    return projectWanted;    
+    
+    for (int n = 0; n < count; n++)
+    {
+      Project existingProject = projectList[n];
+      if (projectWanted.equals(existingProject))
+      {
+        position = n;
+      }
+    }
+    return position;   
   }
                  
   // ------------------------------------
   // Returns all existing project names.
   // ------------------------------------
-  private String toStringProjectNames()
+  private String toStringProjectsBrief()
   {
-    String output = "";
+    String output1 = "\n\tExisting project(s) and details: \n";
+    String output2 = "";
     for (int n=0; n < count; n++)
     {
       Project existingProject = projectList[n];
-      output += existingProject.getProjectName() + " ";
+      if ((existingProject.getMemberVotesList()) == null)
+      {
+        output2 = " No votes.";
+      }
+      else
+      {
+        output2 = " Votes existed.";
+      }
+      output1 += "\t" + existingProject.getProjectName() + " " 
+                      + existingProject.getMemberNo() + output2 + "\n";      
     }
-    return output;
+    return output1;
   }
 
   public boolean projectExist(String aName)

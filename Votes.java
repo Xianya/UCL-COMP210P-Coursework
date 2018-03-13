@@ -1,23 +1,23 @@
 public class Votes
 {
   private int[][] votesLists;
-  private int projectNo;
+  private int projectPosition;
 
   public Votes()
   {
     votesLists = null;
-    projectNo = 0;
+    projectPosition = 0;
   }
 
   public Votes(int[][] theLists, int theNo)
   {
     votesLists = theLists;
-    projectNo = theNo;
+    projectPosition = theNo;
   }
 
   public void setProjectNo(int n)
   {
-    projectNo = n;
+    projectPosition = n;
   }
 
   public void setVotesLists(int[][] list)
@@ -28,9 +28,9 @@ public class Votes
   // -------------------------------------------------------
   // Returns the project position in the projectList array.
   // -------------------------------------------------------
-  public int getProjectNo()
+  public int getProjectPosition()
   {
-    return projectNo;
+    return projectPosition;
   }
 
   // ----------------------------------------------------------

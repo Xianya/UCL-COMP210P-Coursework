@@ -130,6 +130,11 @@
     }
   }
 
+  public int[][] getMemberVotesList()
+  {
+     return memberVoteList;
+  }
+  
   // ------------------------------------------------------------------------
   // Returns the value of the nth person's vote for the mth person if valid.
   // ------------------------------------------------------------------------
