@@ -1,34 +1,42 @@
-public class Project
+ public class Project
 {
   private String projectName;
   private int noOfMembers;
   private String[] memberNameList;
   private int[][] memberVoteList;
 
+  //---------------------------------------------------------------------
+  // This constructor creates a default CreateProject object when the
+  // constructor is called with an integer, normally used with 0.
+  //---------------------------------------------------------------------
+  public Project()
+  {
+    projectName = "";
+    noOfMembers = 0;
+    memberNameList = null;
+    memberVoteList = null;
+  }
 
   //--------------------------------------------------------------------------
   // This constructor takes in user input and initialises the project name,
   // number of members, name of members accordingly; setting the values of
   // votes to default, to be inputted later.
   // -------------------------------------------------------------------------
-  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList)
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, int[][] theMemberVoteList)
   {
-    projectName = theProjectName;
-    noOfMembers = theNoOfMembers;
-    memberNameList = theMemberNameList;
-    memberVoteList = null;
-  }
-
-  //---------------------------------------------------------------------
-  // This constructor creates a default CreateProject object when the
-  // constructor is called with an integer, normally used with 0.
-  //---------------------------------------------------------------------
-  public Project(int n)
-  {
-    projectName = "";
-    noOfMembers = 0;
-    memberNameList = null;
-    memberVoteList = null;
+    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
+        Controller.validateNameList(theNoOfMembers, theMemberNameList) &&
+        Controller.validateVoteList(theNoOfMembers, theMemberVoteList))
+    {
+      projectName = theProjectName;
+      noOfMembers = theNoOfMembers;
+      memberNameList = theMemberNameList;
+      memberVoteList = theMemberVoteList;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
   }
 
   //-------------------
@@ -131,6 +139,11 @@ public class Project
     }
   }
 
+  public int[][] getMemberVotesList()
+  {
+     return memberVoteList;
+  }
+
   // ------------------------------------------------------------------------
   // Returns the value of the nth person's vote for the mth person if valid.
   // ------------------------------------------------------------------------
@@ -197,6 +210,5 @@ public class Project
         return false;
     }
   }
-
 
 }

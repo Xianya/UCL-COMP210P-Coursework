@@ -16,7 +16,7 @@ public class Controller
   {
     return ((input.equals("a")) || (input.equals("c")) ||
             (input.equals("v")) || (input.equals("s")) ||
-            (input.equals("q")));
+            (input.equals("q")) || (input.equals("d")) || (input.equals("x")));
   }
 
   // ------------------------------------
@@ -92,6 +92,76 @@ public class Controller
     return valid;
   }
 
+  //---------------------------------------
+  // Validate the list of names of members
+  // with corresponding number of members.
+  //---------------------------------------
+  public static boolean validateNameList(int noOfMembers, String [] memberNameList)
+  {
+    boolean valid = true;
+    if (!validateNoOfMembers(noOfMembers))
+    {
+      fatalError("Invalid number of members passed as argument.");
+    }
+    if (memberNameList==null)
+    {
+      valid = false;
+    }
+
+    if (noOfMembers==memberNameList.length)
+    {
+      for (int n=0; n < noOfMembers; n++)
+      {
+        valid = validateName(memberNameList[n]);
+      }
+    }
+    else
+    {
+      valid = false;
+    }
+    return valid;
+
+  }
+
+  //-----------------------------------------------
+  // Validate the list of votes with corresponding
+  // number of members.
+  //-----------------------------------------------
+  public static boolean validateVoteList(int noOfMembers, int [][] votesList)
+  {
+    boolean valid = true;
+    if (!validateNoOfMembers(noOfMembers))
+    {
+      fatalError("Invalid number of members passed as argument.");
+    }
+    if (votesList!=null)
+    {
+      if (noOfMembers == votesList.length)
+      {
+        for (int n=0; n < noOfMembers; n++)
+        {
+          if (noOfMembers == votesList[n].length)
+          {
+            for (int m=0; m < noOfMembers; m++)
+            {
+              valid = votesValid(votesList[n][m]);
+            }
+            valid = votesHundred(votesList[n]);
+          }
+          else
+          {
+            valid = false;
+          }
+        }
+      }
+      else
+      {
+        valid = false;
+      }
+    }
+    return valid;
+  }
+
   // ----------------------------------------------
   // Check the vote entered was between 0 and 100.
   // ----------------------------------------------
@@ -122,7 +192,7 @@ public class Controller
   public static void fatalError(String errorMessage)
   {
     System.out.println("Fatal error: "+ errorMessage);
-    System.exit(1);
+    System.exit(0);
   }
 
 }
