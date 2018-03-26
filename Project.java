@@ -16,7 +16,7 @@
     memberNameList = null;
     memberVoteList = null;
   }
-  
+
   //--------------------------------------------------------------------------
   // This constructor takes in user input and initialises the project name,
   // number of members, name of members accordingly; setting the values of
@@ -24,10 +24,19 @@
   // -------------------------------------------------------------------------
   public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, int[][] theMemberVoteList)
   {
-    projectName = theProjectName;
-    noOfMembers = theNoOfMembers;
-    memberNameList = theMemberNameList;
-    memberVoteList = theMemberVoteList;
+    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
+        Controller.validateNameList(theNoOfMembers, theMemberNameList) &&
+        Controller.validateVoteList(theNoOfMembers, theMemberVoteList))
+    {
+      projectName = theProjectName;
+      noOfMembers = theNoOfMembers;
+      memberNameList = theMemberNameList;
+      memberVoteList = theMemberVoteList;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
   }
 
   //-------------------
@@ -134,7 +143,7 @@
   {
      return memberVoteList;
   }
-  
+
   // ------------------------------------------------------------------------
   // Returns the value of the nth person's vote for the mth person if valid.
   // ------------------------------------------------------------------------
