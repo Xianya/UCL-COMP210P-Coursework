@@ -13,16 +13,63 @@ public class FGA
   {
     FGA theFGA = new FGA();
     FileController.inputFile();
-    theFGA.mainMenu();
+    
+    char option = '*';        
+    while (option != 'q')
+    {
+      option = mainMenu(); 
+      switch (option)
+      {
+        case 'a':
+          about();
+          pressKey();
+          break;
+
+        case 'c':
+          theFGA.allProjectList.addProjectList(theFGA.createProject());
+          theFGA.allProjectList.addCount();
+          pressKey();
+          break;
+
+        case 'd':
+          theFGA.deleteProject();
+          pressKey();
+          break;
+
+        case 'v':
+          if (theFGA.allProjectList.getCount()!=0)
+          {
+            Votes votes = new Votes(theFGA.enterVotes());
+            
+            //Add the votes to the specific project stored in AllProject 
+            int position = votes.getProjectPosition();
+            theFGA.allProjectList.setVotesInAllProject(position, votes);
+          }
+          else
+          {
+            System.out.println("\n\tNo project was created." +
+                               "\n\tPlease create projects first.");
+          }
+          pressKey();
+          break;
+
+        case 's':
+          theFGA.showProject();
+          pressKey();
+          break;
+      }
+    }
+
     FileController.outputFile();
     System.out.println("\tPROGRAM ENDED\n");
   }
 
-  public void mainMenu()
+  private static char mainMenu()
   {
     Scanner scan = new Scanner(System.in);
     String optionInput;
     char option;
+    
     menuPanel();
     do
     {
@@ -36,59 +83,13 @@ public class FGA
       {
         System.out.println("\tUnknown option, please try again:");
       }
-
     } while (!Controller.validOption(optionInput));
 
     option = optionInput.charAt(0);
-
-    switch (option)
-    {
-      case 'a':
-        about();
-        backToMenu();
-        break;
-
-      case 'c':
-        allProjectList.addProjectList(createProject());
-        allProjectList.addCount();
-        backToMenu();
-        break;
-
-      case 'd':
-        deleteProject();
-        allProjectList.reduceCount();
-        backToMenu();
-        break;
-
-      case 'v':
-        if (allProjectList.getCount()!=0)
-        {
-          Votes votes = new Votes(enterVotes());
-          int position = votes.getProjectPosition();
-          Project theProject = new Project();
-          theProject = allProjectList.getProject(position);
-          theProject.setVotes(votes);
-          allProjectList.setProject(position, theProject);
-        }
-        else
-        {
-          System.out.println("\n\tNo project was created." +
-                             "\n\tPlease create projects first.");
-        }
-        backToMenu();
-        break;
-
-      case 's':
-        showProject();
-        backToMenu();
-        break;
-
-      case 'q':
-        break;
-    }
+    return option;
   }
 
-  public static void about()
+  private static void about()
   {
     System.out.println("\n\t ------------------------------------- \n"+
                          "\t|      About                          |\n"+
@@ -101,7 +102,7 @@ public class FGA
                          "\t ------------------------------------- \n");
   }
 
-  public static void menuPanel()
+  private static void menuPanel()
   {
     System.out.println("\n\t ------------------------------------- \n"+
                          "\t|  Welcome to Split-it                |\n"+
@@ -114,8 +115,8 @@ public class FGA
                          "\t|  Quit (Q)                           |\n"+
                          "\t ------------------------------------- \n");
   }
-
-  public void backToMenu()
+  
+  public static void pressKey()
   {
     Scanner scan = new Scanner(System.in);
     String option;
@@ -124,9 +125,8 @@ public class FGA
                               // This allows the user to press "return" to go back to
                               // main menu as well as any other keys.
                               //------------------------------------------------------
-    mainMenu();
   }
-
+  
   public Project createProject()
   {
     String projectName;
@@ -174,8 +174,9 @@ public class FGA
     Votes theVotes = new Votes();
     int [][] votesLists = null;
     int count =  allProjectList.getCount();
-    int position = getProjectPositionWithPrompt("Enter the project name: ");
-    theVotes.setProjectNo(position);
+    int position = getProjectPositionWithPrompt("Enter the project name you want to enter votes: ");
+    
+    theVotes.setProjectPosition(position);
     Project projectWanted = allProjectList.getProject(position);
 
     System.out.println("\tThere are " + projectWanted.getMemberNo()
@@ -248,9 +249,11 @@ public class FGA
         int[][] votesWanted;
         int position = getProjectPositionWithPrompt("Enter the project name: ");
         Project projectWanted = allProjectList.getProject(position);
+        
         Votes votes = projectWanted.getVotesList();
         votesWanted = votes.getVotesLists();
-        if (votesWanted!=null)
+        
+        if (votesWanted != null)
         {
           double[][] ratio = new double[3][3];
           ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
@@ -278,7 +281,6 @@ public class FGA
           System.out.println("\n\tNo votes have been entered for this project."+
                              "\n\tEnter votes first to view points allocation.");
         }
-
       }
       else
       {
@@ -291,17 +293,18 @@ public class FGA
       System.out.println("\n\tNo project was created." +
                          "\n\tPlease create projects first.");
     }
-
   }
 
   private void deleteProject()
   {
     int count = allProjectList.getCount();
-    if (count !=0)
+    if (count != 0)
     {
       int position = getProjectPositionWithPrompt("Enter the name of the project you want to delete: ");
+      System.out.println("\n\tProject \"" + allProjectList.getProject(position).getProjectName()
+                         + "\" is deleted.");
       allProjectList.setProject(position,null);
-
+                               
       //move projects forward to fill the blank
       if (count > 1 && (position != count - 1))
       {
@@ -311,6 +314,8 @@ public class FGA
         }
         allProjectList.setProject(count, null);
       }
+      
+      allProjectList.reduceCount();       
     }
     else
     {
@@ -322,7 +327,7 @@ public class FGA
   private int getProjectPositionWithPrompt(String aPrompt)
   {
     int count = allProjectList.getCount();
-    if (count==0)
+    if (count == 0)
     {
       return 0;
     }
@@ -356,13 +361,13 @@ public class FGA
     }
   }
 
-  // ------------------------------------
-  // Returns all existing project names.
-  // ------------------------------------
+  // ------------------------------------------------------------------------------
+  // Returns all existing project names, number of members and existence of votes.
+  // ------------------------------------------------------------------------------
   private String toStringProjectsBrief()
   {
     int count = allProjectList.getCount();
-    if (count==0)
+    if (count == 0)
     {
       return("\n\tNo project was created.");
     }
@@ -370,7 +375,7 @@ public class FGA
     {
       String output1 = "\n\tExisting project(s) and details: \n";
       String output2 = "";
-      for (int n=0; n < count; n++)
+      for (int n = 0; n < count; n++)
       {
         Project existingProject = allProjectList.getProject(n);
         if ((existingProject.getVotesList()) == null)

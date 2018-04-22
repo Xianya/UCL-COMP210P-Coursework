@@ -16,7 +16,7 @@ public class Controller
   {
     return ((input.equals("a")) || (input.equals("c")) ||
             (input.equals("v")) || (input.equals("s")) ||
-            (input.equals("q")) || (input.equals("d")) || (input.equals("x")));
+            (input.equals("q")) || (input.equals("d")) );
   }
 
   // ------------------------------------
@@ -59,23 +59,24 @@ public class Controller
     }
   }
 
-  //--------------------------------------------------
-  // Validate the names to alphanumerical characters
-  // and of length within a sensible range.
-  //--------------------------------------------------
+  //----------------------------------------------------------------
+  // Validate the names to alphanumerical characters and of length 
+  // within a sensible range.
+  //----------------------------------------------------------------
   public static boolean validateName(String name)
   {
     boolean valid = true;
-    if (name.length()<MINNAMELENGTH || name.length()>MAXNAMELENGTH)
+    if (name.length() < MINNAMELENGTH || name.length() > MAXNAMELENGTH)
     {
       valid = false;
     }
-    for (int i = 0; i <name.length(); i++)
+    
+    for (int i = 0; i < name.length(); i++)
     {
       if (!Character.isLetterOrDigit(name.charAt(i)))
         valid = false;
     }
-
+    
     return valid;
   }
 
@@ -92,10 +93,9 @@ public class Controller
     return valid;
   }
 
-  //---------------------------------------
-  // Validate the list of names of members
-  // with corresponding number of members.
-  //---------------------------------------
+  //-----------------------------------------------------------------------------
+  // Validate the list of names of members with corresponding number of members.
+  //-----------------------------------------------------------------------------
   public static boolean validateNameList(int noOfMembers, String [] memberNameList)
   {
     boolean valid = true;
@@ -119,14 +119,13 @@ public class Controller
     {
       valid = false;
     }
+    
     return valid;
-
   }
 
-  //-----------------------------------------------
-  // Validate the list of votes with corresponding
-  // number of members.
-  //-----------------------------------------------
+  //------------------------------------------------------------------
+  // Validate the list of votes with corresponding number of members.
+  //------------------------------------------------------------------
   public static boolean validateVoteList(int noOfMembers, Votes theVotes)
   {
     boolean valid = true;
@@ -175,7 +174,6 @@ public class Controller
     return (votesTotal == 100);
   }
 
-
   // -------------------------------------------------------------
   // from Project.java in Deliverable 1: Feedback and Feedforward
   // -------------------------------------------------------------
@@ -184,5 +182,4 @@ public class Controller
     System.out.println("Fatal error: "+ errorMessage);
     System.exit(0);
   }
-
 }

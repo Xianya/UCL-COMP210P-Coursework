@@ -51,7 +51,7 @@ public class AllProject
     }
   }
 
-  public void setVotes(int n, Votes theVotes)
+  public void setVotesInAllProject(int n, Votes theVotes)
   {
     if (n <= count)
     {
@@ -63,13 +63,12 @@ public class AllProject
     }
   }
 
-
   public static void addCount()
   {
     count = count + 1;
   }
 
-  public void reduceCount()
+  public static void reduceCount()
   {
     count = count - 1;
   }

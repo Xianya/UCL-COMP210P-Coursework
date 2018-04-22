@@ -16,19 +16,15 @@ public class Votes
   }
 
   public Votes(Votes theVotes)
-  {
-    int size = votesLists.length;
-    for (int n=0; n<size; n++)
-    {
-      for (int m=0; m<size; m++)
-      {
-        votesLists[n][m] = theVotes.getMemberVote(n,m);
-      }
-    }
-    projectPosition = theVotes.getProjectPosition();
+  {      
+    setProjectPosition(theVotes.getProjectPosition());
+    setVotesLists(theVotes.votesLists);
   }
 
-  public void setProjectNo(int n)
+  // -------------------------------------------------------
+  // Sets the project position in the projectList array.
+  // -------------------------------------------------------
+  public void setProjectPosition(int n)
   {
     projectPosition = n;
   }
@@ -55,10 +51,10 @@ public class Votes
     if (votesLists!=null)
     {
       int size = votesLists.length;
-      list = new int [size][size];
-      for (int n = 0; n<size; n++)
+      list = new int[size][size];
+      for (int n = 0; n < size; n++)
       {
-        for(int m = 0; m<size; m++)
+        for(int m = 0; m < size; m++)
         {
           list[n][m] = votesLists[n][m];
         }
@@ -73,7 +69,8 @@ public class Votes
   public int getMemberVote(int n, int m)
   {
     final int ERROR = 0;
-    if (n >= 0 && m >= 0 && n< votesLists.length && m< votesLists.length && n!=m)
+    if (n >= 0 && m >= 0 && n < votesLists.length 
+        && m < votesLists.length && n != m)
     {
       return votesLists[n][m];
     }
@@ -83,5 +80,4 @@ public class Votes
       return ERROR;
     }
   }
-
 }
