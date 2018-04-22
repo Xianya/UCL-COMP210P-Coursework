@@ -15,6 +15,19 @@ public class Votes
     projectPosition = theNo;
   }
 
+  public Votes(Votes theVotes)
+  {
+    int size = votesLists.length;
+    for (int n=0; n<size; n++)
+    {
+      for (int m=0; m<size; m++)
+      {
+        votesLists[n][m] = theVotes.getMemberVote(n,m);
+      }
+    }
+    projectPosition = theVotes.getProjectPosition();
+  }
+
   public void setProjectNo(int n)
   {
     projectPosition = n;
@@ -52,6 +65,23 @@ public class Votes
       }
     }
     return list;
+  }
+
+  // ------------------------------------------------------------------------
+  // Returns the value of the nth person's vote for the mth person if valid.
+  // ------------------------------------------------------------------------
+  public int getMemberVote(int n, int m)
+  {
+    final int ERROR = 0;
+    if (n >= 0 && m >= 0 && n< votesLists.length && m< votesLists.length && n!=m)
+    {
+      return votesLists[n][m];
+    }
+    else
+    {
+      Controller.fatalError("Invalid number passed to the argument.");
+      return ERROR;
+    }
   }
 
 }

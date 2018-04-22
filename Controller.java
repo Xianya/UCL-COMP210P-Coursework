@@ -127,36 +127,26 @@ public class Controller
   // Validate the list of votes with corresponding
   // number of members.
   //-----------------------------------------------
-  public static boolean validateVoteList(int noOfMembers, int [][] votesList)
+  public static boolean validateVoteList(int noOfMembers, Votes theVotes)
   {
     boolean valid = true;
-    if (!validateNoOfMembers(noOfMembers))
+    int [][] votesList = theVotes.getVotesLists();
+    if (noOfMembers == votesList.length)
     {
-      fatalError("Invalid number of members passed as argument.");
-    }
-    if (votesList!=null)
-    {
-      if (noOfMembers == votesList.length)
+      for (int n=0; n < noOfMembers; n++)
       {
-        for (int n=0; n < noOfMembers; n++)
+        if (noOfMembers == votesList[n].length)
         {
-          if (noOfMembers == votesList[n].length)
+          for (int m=0; m < noOfMembers; m++)
           {
-            for (int m=0; m < noOfMembers; m++)
-            {
-              valid = votesValid(votesList[n][m]);
-            }
-            valid = votesHundred(votesList[n]);
+            valid = votesValid(votesList[n][m]);
           }
-          else
-          {
-            valid = false;
-          }
+          valid = votesHundred(votesList[n]);
         }
-      }
-      else
-      {
-        valid = false;
+        else
+        {
+          valid = false;
+        }
       }
     }
     return valid;

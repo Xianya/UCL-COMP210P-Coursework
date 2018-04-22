@@ -3,7 +3,7 @@
   private String projectName;
   private int noOfMembers;
   private String[] memberNameList;
-  private int[][] memberVoteList;
+  private Votes votesList;
 
   //---------------------------------------------------------------------
   // This constructor creates a default CreateProject object when the
@@ -14,7 +14,7 @@
     projectName = "";
     noOfMembers = 0;
     memberNameList = null;
-    memberVoteList = null;
+    votesList = null;
   }
 
   //--------------------------------------------------------------------------
@@ -22,16 +22,32 @@
   // number of members, name of members accordingly; setting the values of
   // votes to default, to be inputted later.
   // -------------------------------------------------------------------------
-  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, int[][] theMemberVoteList)
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, Votes theVotes)
   {
     if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
         Controller.validateNameList(theNoOfMembers, theMemberNameList) &&
-        Controller.validateVoteList(theNoOfMembers, theMemberVoteList))
+        Controller.validateVoteList(theNoOfMembers, theVotes))
     {
       projectName = theProjectName;
       noOfMembers = theNoOfMembers;
       memberNameList = theMemberNameList;
-      memberVoteList = theMemberVoteList;
+      votesList = theVotes;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
+  }
+
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList)
+  {
+    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
+        Controller.validateNameList(theNoOfMembers, theMemberNameList))
+    {
+      projectName = theProjectName;
+      noOfMembers = theNoOfMembers;
+      memberNameList = theMemberNameList;
+      votesList = null;
     }
     else
     {
@@ -53,20 +69,13 @@
       memberNameList[n] = project.memberNameList[n];
     }
 
-    if (project.memberVoteList == null)
+    if (project.votesList == null)
     {
-      memberVoteList = null;
+      votesList = null;
     }
     else
     {
-      memberVoteList = new int [project.noOfMembers][project.noOfMembers];
-      for (int n = 0; n < project.noOfMembers; n++)
-      {
-        for (int m = 0; m < project.noOfMembers; m++)
-        {
-          memberVoteList [n][m] = project.memberVoteList[n][m];
-        }
-      }
+      votesList = new Votes(project.votesList);
     }
   }
 
@@ -94,22 +103,15 @@
     memberNameList = list;
   }
 
-  public void setVotes(int[][] voteList)
+  public void setVotes(Votes theVotes)
   {
-    if (voteList!=null)
+    if (theVotes.getVotesLists().length == noOfMembers)
     {
-      if (voteList.length == noOfMembers)
-      {
-        memberVoteList = voteList;
-      }
-      else
-      {
-        Controller.fatalError("Votes and project do not match.");
-      }
+      votesList = new Votes(theVotes);
     }
     else
     {
-      memberVoteList = null;
+      Controller.fatalError("Votes and project do not match.");
     }
   }
 
@@ -139,26 +141,9 @@
     }
   }
 
-  public int[][] getMemberVotesList()
+  public Votes getVotesList()
   {
-     return memberVoteList;
-  }
-
-  // ------------------------------------------------------------------------
-  // Returns the value of the nth person's vote for the mth person if valid.
-  // ------------------------------------------------------------------------
-  public int getMemberVote(int n, int m)
-  {
-    final int ERROR = 0;
-    if (n >= 0 && m >= 0 && n< noOfMembers && m< noOfMembers && n!=m)
-    {
-      return memberVoteList[n][m];
-    }
-    else
-    {
-      Controller.fatalError("Invalid number passed to the argument.");
-      return ERROR;
-    }
+     return votesList;
   }
 
   public String toString()
@@ -172,7 +157,7 @@
       output2 += "," + getMemberName(n);
     }
 
-    if (memberVoteList != null)
+    if (votesList != null)
     {
       for (int n = 0; n<noOfMembers; n++)
       {
@@ -189,7 +174,7 @@
     {
       if (m != n)
       {
-        vote += "," + getMemberName(m) + "," + memberVoteList[n][m];
+        vote += "," + getMemberName(m) + "," + votesList.getMemberVote(n, m);
       }
     }
 
