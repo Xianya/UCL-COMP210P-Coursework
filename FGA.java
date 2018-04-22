@@ -116,7 +116,7 @@ public class FGA
                          "\t ------------------------------------- \n");
   }
   
-  public static void pressKey()
+  private static void pressKey()
   {
     Scanner scan = new Scanner(System.in);
     String option;
@@ -250,36 +250,44 @@ public class FGA
         int position = getProjectPositionWithPrompt("Enter the project name: ");
         Project projectWanted = allProjectList.getProject(position);
         
-        Votes votes = projectWanted.getVotesList();
-        votesWanted = votes.getVotesLists();
-        
-        if (votesWanted != null)
+        if (projectWanted.getMemberNo() == 3)
         {
-          double[][] ratio = new double[3][3];
-          ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
-          ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
-          ratio[1][0] = votesWanted[1][0]/(double)votesWanted[1][2];
-          ratio[1][2] = votesWanted[1][2]/(double)votesWanted[1][0];
-          ratio[2][0] = votesWanted[2][0]/(double)votesWanted[2][1];
-          ratio[2][1] = votesWanted[2][1]/(double)votesWanted[2][0];
-
-          double[] share = new double[3];
-          share[0] = 1/(1+ratio[1][2]+ratio[2][1]);
-          share[1] = 1/(1+ratio[0][2]+ratio[2][0]);
-          share[2] = 1/(1+ratio[0][1]+ratio[1][0]);
-
-          System.out.println("\tThere are 3 team members.");
-          System.out.println("\n\tThe point allocation based on votes is: \n");
-          for(int n = 0; n < 3; n++)
+          Votes votes = projectWanted.getVotesList();
+          votesWanted = votes.getVotesLists();
+        
+          if (votesWanted != null)
           {
-            System.out.println("\t\t" + projectWanted.getMemberName(n) +
-                               ":\t" + (int)(share[n]*100));
+            double[][] ratio = new double[3][3];
+            ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
+            ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
+            ratio[1][0] = votesWanted[1][0]/(double)votesWanted[1][2];
+            ratio[1][2] = votesWanted[1][2]/(double)votesWanted[1][0];
+            ratio[2][0] = votesWanted[2][0]/(double)votesWanted[2][1];
+            ratio[2][1] = votesWanted[2][1]/(double)votesWanted[2][0];
+
+            double[] share = new double[3];
+            share[0] = 1/(1+ratio[1][2]+ratio[2][1]);
+            share[1] = 1/(1+ratio[0][2]+ratio[2][0]);
+            share[2] = 1/(1+ratio[0][1]+ratio[1][0]);
+
+            System.out.println("\tThere are 3 team members.");
+            System.out.println("\n\tThe point allocation based on votes is: \n");
+          
+            for(int n = 0; n < 3; n++)
+            {
+              System.out.println("\t\t" + projectWanted.getMemberName(n) +
+                                 ":\t" + (int)(share[n]*100));
+            }
+          }
+          else
+          {
+            System.out.println("\n\tNo votes have been entered for this project."+
+                               "\n\tEnter votes first to view points allocation.");
           }
         }
         else
         {
-          System.out.println("\n\tNo votes have been entered for this project."+
-                             "\n\tEnter votes first to view points allocation.");
+          System.out.println("\n\tThe project doesn't have 3 members.");
         }
       }
       else
@@ -301,8 +309,7 @@ public class FGA
     if (count != 0)
     {
       int position = getProjectPositionWithPrompt("Enter the name of the project you want to delete: ");
-      System.out.println("\n\tProject \"" + allProjectList.getProject(position).getProjectName()
-                         + "\" is deleted.");
+      String theName = allProjectList.getProject(position).getProjectName();
       allProjectList.setProject(position,null);
                                
       //move projects forward to fill the blank
@@ -310,11 +317,12 @@ public class FGA
       {
         for(int x = 0; x < (count - position -1); x++)
         {
-          allProjectList.setProject(position - 1, allProjectList.getProject(position));
+          allProjectList.setProject(position + x, allProjectList.getProject(position + x + 1));
         }
         allProjectList.setProject(count, null);
       }
       
+      System.out.println("\n\tProject \"" + theName + "\" is deleted.");
       allProjectList.reduceCount();       
     }
     else

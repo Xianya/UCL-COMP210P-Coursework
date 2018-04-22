@@ -50,7 +50,6 @@ public class FileController
     private static void readFile()
     {
       AllProject allProjectList = new AllProject();
-      int count = allProjectList.getCount();
       Scanner inputStream = null;
 
       try
@@ -68,6 +67,7 @@ public class FileController
       int noOfMemberFromFile = 0;
       String[] memberNameListFromFile = null;
       int[][] memberVoteListFromFile = null;
+      
       String line = null;
       while (inputStream.hasNextLine())
       {
@@ -105,7 +105,7 @@ public class FileController
             for(int y = 0; y < noOfMemberFromFile - 1; y++)
             {
               int position = 2 + noOfMemberFromFile + x * (2 * noOfMemberFromFile - 1) + 2 * y + 3 - 1;
-              if (x==y)
+              if (x == y)
               {
                 memberVoteListFromFile[x][y]=0;
               }
@@ -138,7 +138,19 @@ public class FileController
         {
           memberVoteListFromFile = null;
         }
-
+        int count = allProjectList.getCount();
+          
+        /*test
+        System.out.println("count is :"+count);
+          for(int x = 0; x < memberVoteListFromFile.length; x++)
+          {
+            for(int y = 0; y < memberVoteListFromFile.length; y++)
+            {  
+                  System.out.print(memberVoteListFromFile[x][y]);
+            }
+            System.out.println();
+          }   */     
+                
         Votes votesFromFile = new Votes(memberVoteListFromFile, count);
 
         Project theProject = new Project(projectNameFromFile, noOfMemberFromFile,
