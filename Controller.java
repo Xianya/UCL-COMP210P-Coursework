@@ -178,17 +178,14 @@ public class Controller
   //------------------------------------------------------------------
   public static boolean validateVoteList(int noOfMembers, Votes theVotes)
   {
-    boolean valid = true;
+    boolean valid = false;
     int [][] votesList = theVotes.getVotesLists();
       
     if (noOfMembers == votesList.length)
     {
       valid = validateVoteList(votesList);
     }
-    else
-    {
-      return false;
-    }
+
     return valid;
   }
 
