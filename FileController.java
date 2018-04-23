@@ -47,6 +47,9 @@ public class FileController
       System.out.println("\tText written to \"data.txt\".");
     }
 
+    // --------------------------------
+    // Store valid projects from file
+    // --------------------------------
     private static void readFile()
     {
       AllProject allProjectList = new AllProject();
@@ -68,7 +71,7 @@ public class FileController
       int[][] memberVoteListFromFile = null;
       String line = null;
       
-      while (inputStream.hasNextLine())
+      while (inputStream.hasNextLine()) //store projects from each line of file
       {
         line = inputStream.nextLine();
         String[] text = line.split(",");
@@ -83,20 +86,21 @@ public class FileController
           Controller.fatalError("File is not in the right format.");
         }
 
+        // Check the format of the line by its length. The length depends on whether the project has votes.
         if (!(text.length == (2+2*noOfMemberFromFile*noOfMemberFromFile) || text.length ==2+noOfMemberFromFile))
         {
           Controller.fatalError("File is not in the right format.");
         }
 
-        //member names
+        // Take in member names.
         memberNameListFromFile = new String[noOfMemberFromFile];
         for(int n = 0; n < noOfMemberFromFile; n++)
         {
           memberNameListFromFile[n] = text[n+2];
         }
 
-        //votes
-        if (text.length > noOfMemberFromFile + 2)
+        // Take in votes.
+        if (text.length > noOfMemberFromFile + 2) // votes exist
         {
           memberVoteListFromFile = new int[noOfMemberFromFile][noOfMemberFromFile];
           for(int x = 0; x < noOfMemberFromFile; x++)
@@ -137,7 +141,7 @@ public class FileController
                                            memberNameListFromFile, votesFromFile);
           allProjectList.setProject(allProjectList.getCount(), theProject);
         }
-        else
+        else // votes don't exist
         {
           memberVoteListFromFile = null;
           Project theProject = new Project(projectNameFromFile, noOfMemberFromFile,

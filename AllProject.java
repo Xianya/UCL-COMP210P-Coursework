@@ -34,9 +34,16 @@ public class AllProject
     }
   }
 
-  public void addProjectList(Project theProject)
+  public void addProject(Project theProject)
   {
-    projectList[count] = theProject;
+    if (count < MAX_PROJECTS)
+    {
+      projectList[count] = theProject;
+    }
+    else
+    {
+      Controller.fatalError("Number of porjects exceeds limit. MAX: " + MAX_PROJECTS);
+    }
   }
 
   public void setProject(int n, Project theProject)
@@ -65,12 +72,26 @@ public class AllProject
 
   public static void addCount()
   {
-    count = count + 1;
+    if (count < MAX_PROJECTS)
+    {
+      count = count + 1;
+    }
+    else
+    {
+      Controller.fatalError("Number of porjects exceeds limit. MAX: " + MAX_PROJECTS);
+    }
   }
 
   public static void reduceCount()
   {
-    count = count - 1;
+    if (count > 0)
+    {
+      count = count - 1;
+    }
+    else
+    {
+      Controller.fatalError("Invalid amount of projects.");
+    }
   }
 
   public String toString()

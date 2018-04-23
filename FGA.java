@@ -26,7 +26,7 @@ public class FGA
           break;
 
         case 'c':
-          theFGA.allProjectList.addProjectList(theFGA.createProject());
+          theFGA.allProjectList.addProject(theFGA.createProject());
           theFGA.allProjectList.addCount();
           pressKey();
           break;
@@ -318,8 +318,8 @@ public class FGA
         allProjectList.setProject(count, null);
       }
       
-      System.out.println("\n\tProject \"" + theName + "\" is deleted.");
-      allProjectList.reduceCount();       
+      allProjectList.reduceCount(); 
+      System.out.println("\n\tProject \"" + theName + "\" is deleted.");     
     }
     else
     {

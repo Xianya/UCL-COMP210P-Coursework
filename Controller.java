@@ -65,19 +65,20 @@ public class Controller
   //----------------------------------------------------------------
   public static boolean validateName(String name)
   {
-    boolean valid = true;
     if (name.length() < MINNAMELENGTH || name.length() > MAXNAMELENGTH)
     {
-      valid = false;
+      return false;
     }
     
     for (int i = 0; i < name.length(); i++)
     {
       if (!Character.isLetterOrDigit(name.charAt(i)))
-        valid = false;
+      {
+        return false;
+      }
     }
     
-    return valid;
+    return true;
   }
 
   //--------------------------------------
@@ -85,12 +86,7 @@ public class Controller
   //--------------------------------------
   public static boolean validateNoOfMembers(int n)
   {
-    boolean valid = false;
-    if (n >= MIN_MEMBERS && n <= MAX_MEMBERS)
-    {
-      valid = true;
-    }
-    return valid;
+    return (n >= MIN_MEMBERS && n <= MAX_MEMBERS);
   }
    
   //-----------------------------------------------------------------------------
@@ -98,26 +94,31 @@ public class Controller
   //-----------------------------------------------------------------------------
   public static boolean validateNameList(int noOfMembers, String [] memberNameList)
   {
-    boolean valid = true;
+    boolean valid = false;
     if (!validateNoOfMembers(noOfMembers))
     {
       fatalError("Invalid number of members passed as argument.");
     }
-    if (memberNameList==null)
+    
+    if (memberNameList == null)
     {
-      valid = false;
+      return false;
     }
 
     if (noOfMembers==memberNameList.length)
     {
-      for (int n=0; n < noOfMembers; n++)
+      for (int n = 0; n < noOfMembers; n++)
       {
         valid = validateName(memberNameList[n]);
+        if (valid == false)
+        {
+          return valid;
+        }
       }
     }
     else
     {
-      valid = false;
+      return false;
     }
     
     return valid;
@@ -128,14 +129,8 @@ public class Controller
   //--------------------------------------
   public static boolean validatePosition(int n)
   {
-    boolean valid = false;
     AllProject allProjectList = new AllProject();
-    
-    if (n <= allProjectList.getCount())
-    {
-      valid = true;
-    }
-    return valid;
+    return (n <= allProjectList.getCount());
   }
   
   //-----------------------------
@@ -203,7 +198,6 @@ public class Controller
   public static boolean votesHundred(int[] inputList)
   {
     int votesTotal = 0;
-
     for (int n = 0; n < inputList.length; n++)
     {
       votesTotal += inputList[n];
