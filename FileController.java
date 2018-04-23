@@ -21,7 +21,7 @@ public class FileController
       }
       catch (NullPointerException e)
       {
-        AllProject allProjectList = new AllProject(0);
+        AllProject allProjectList = new AllProject();
       }
     }
 
@@ -51,7 +51,6 @@ public class FileController
     {
       AllProject allProjectList = new AllProject();
       Scanner inputStream = null;
-
       try
       {
         inputStream = new Scanner(new FileInputStream(fileName));
@@ -67,8 +66,8 @@ public class FileController
       int noOfMemberFromFile = 0;
       String[] memberNameListFromFile = null;
       int[][] memberVoteListFromFile = null;
-      
       String line = null;
+      
       while (inputStream.hasNextLine())
       {
         line = inputStream.nextLine();
@@ -107,7 +106,7 @@ public class FileController
               int position = 2 + noOfMemberFromFile + x * (2 * noOfMemberFromFile - 1) + 2 * y + 3 - 1;
               if (x == y)
               {
-                memberVoteListFromFile[x][y]=0;
+                memberVoteListFromFile[x][y] = 0;
               }
               if (x > y)
               {
@@ -133,30 +132,18 @@ public class FileController
               }
             }
           }
+          Votes votesFromFile = new Votes(memberVoteListFromFile, allProjectList.getCount());
+          Project theProject = new Project(projectNameFromFile, noOfMemberFromFile,
+                                           memberNameListFromFile, votesFromFile);
+          allProjectList.setProject(allProjectList.getCount(), theProject);
         }
         else
         {
           memberVoteListFromFile = null;
+          Project theProject = new Project(projectNameFromFile, noOfMemberFromFile,
+                                           memberNameListFromFile);
+          allProjectList.setProject(allProjectList.getCount(), theProject);
         }
-        int count = allProjectList.getCount();
-          
-        /*test
-        System.out.println("count is :"+count);
-          for(int x = 0; x < memberVoteListFromFile.length; x++)
-          {
-            for(int y = 0; y < memberVoteListFromFile.length; y++)
-            {  
-                  System.out.print(memberVoteListFromFile[x][y]);
-            }
-            System.out.println();
-          }   */     
-                
-        Votes votesFromFile = new Votes(memberVoteListFromFile, count);
-
-        Project theProject = new Project(projectNameFromFile, noOfMemberFromFile,
-                                         memberNameListFromFile, votesFromFile);
-
-        allProjectList.setProject(count, theProject);
         allProjectList.addCount();
       }
 

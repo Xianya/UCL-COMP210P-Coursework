@@ -86,13 +86,13 @@ public class Controller
   public static boolean validateNoOfMembers(int n)
   {
     boolean valid = false;
-    if (n>=MIN_MEMBERS && n<=MAX_MEMBERS)
+    if (n >= MIN_MEMBERS && n <= MAX_MEMBERS)
     {
       valid = true;
     }
     return valid;
   }
-
+   
   //-----------------------------------------------------------------------------
   // Validate the list of names of members with corresponding number of members.
   //-----------------------------------------------------------------------------
@@ -123,6 +123,56 @@ public class Controller
     return valid;
   }
 
+  //--------------------------------------
+  // Validate project position in Allproject.
+  //--------------------------------------
+  public static boolean validatePosition(int n)
+  {
+    boolean valid = false;
+    AllProject allProjectList = new AllProject();
+    
+    if (n <= allProjectList.getCount())
+    {
+      valid = true;
+    }
+    return valid;
+  }
+  
+  //-----------------------------
+  // Validate the list of votes
+  //-----------------------------
+  public static boolean validateVoteList(int[][] aList)
+  {
+    boolean valid = false;
+    
+    for (int n = 0; n < aList.length; n++)
+    {
+      for (int m = 0; m < aList[n].length; m++)
+      {
+        valid = votesValid(aList[n][m]);
+        if (valid == false)
+        {
+          return valid;
+        }
+        
+        if (n == m)
+        {
+          valid = (aList[n][m] == 0);
+          if (valid == false)
+          {
+            return valid;
+          }
+        }            
+      }
+      valid = votesHundred(aList[n]);
+      if (valid == false)
+      {
+        return valid;
+      }
+    }    
+    return valid;
+  }
+  
   //------------------------------------------------------------------
   // Validate the list of votes with corresponding number of members.
   //------------------------------------------------------------------
@@ -130,23 +180,14 @@ public class Controller
   {
     boolean valid = true;
     int [][] votesList = theVotes.getVotesLists();
+      
     if (noOfMembers == votesList.length)
     {
-      for (int n=0; n < noOfMembers; n++)
-      {
-        if (noOfMembers == votesList[n].length)
-        {
-          for (int m=0; m < noOfMembers; m++)
-          {
-            valid = votesValid(votesList[n][m]);
-          }
-          valid = votesHundred(votesList[n]);
-        }
-        else
-        {
-          valid = false;
-        }
-      }
+      valid = validateVoteList(votesList);
+    }
+    else
+    {
+      return false;
     }
     return valid;
   }

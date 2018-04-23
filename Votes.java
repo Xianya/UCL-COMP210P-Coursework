@@ -11,14 +11,14 @@ public class Votes
 
   public Votes(int[][] theLists, int theNo)
   {
-    votesLists = theLists;
-    projectPosition = theNo;
+    setVotesLists(theLists);
+    setProjectPosition(theNo);
   }
 
   public Votes(Votes theVotes)
-  {      
-    setProjectPosition(theVotes.getProjectPosition());
+  {
     setVotesLists(theVotes.votesLists);
+    setProjectPosition(theVotes.getProjectPosition());
   }
 
   // -------------------------------------------------------
@@ -26,12 +26,26 @@ public class Votes
   // -------------------------------------------------------
   public void setProjectPosition(int n)
   {
-    projectPosition = n;
+    if (Controller.validatePosition(n))
+    {
+      projectPosition = n;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
   }
 
   public void setVotesLists(int[][] list)
   {
-    votesLists = list;
+    if (Controller.validateVoteList(list))
+    {
+      votesLists = list;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
   }
 
   // -------------------------------------------------------
@@ -69,7 +83,7 @@ public class Votes
   public int getMemberVote(int n, int m)
   {
     final int ERROR = 0;
-    if (n >= 0 && m >= 0 && n < votesLists.length 
+    if (n >= 0 && m >= 0 && n < votesLists.length
         && m < votesLists.length && n != m)
     {
       return votesLists[n][m];

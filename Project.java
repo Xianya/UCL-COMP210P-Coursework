@@ -24,35 +24,18 @@
   // -------------------------------------------------------------------------
   public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, Votes theVotes)
   {
-    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
-        Controller.validateNameList(theNoOfMembers, theMemberNameList) &&
-        Controller.validateVoteList(theNoOfMembers, theVotes))
-    {
-      projectName = theProjectName;
-      noOfMembers = theNoOfMembers;
-      memberNameList = theMemberNameList;
-      votesList = theVotes;
-    }
-    else
-    {
-      Controller.fatalError("Invalid argument passed to the constructor.");
-    }
+    setProjectName(theProjectName);
+    setNoOfMembers(theNoOfMembers);
+    setMemberNameList(theMemberNameList);
+    setVotes(theVotes);
   }
 
   public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList)
   {
-    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
-        Controller.validateNameList(theNoOfMembers, theMemberNameList))
-    {
-      projectName = theProjectName;
-      noOfMembers = theNoOfMembers;
-      memberNameList = theMemberNameList;
-      votesList = null;
-    }
-    else
-    {
-      Controller.fatalError("Invalid argument passed to the constructor.");
-    }
+    setProjectName(theProjectName);
+    setNoOfMembers(theNoOfMembers);
+    setMemberNameList(theMemberNameList);
+    votesList = null;
   }
 
   //-------------------
@@ -60,14 +43,9 @@
   // ------------------
   public Project(Project project)
   {
-    projectName = project.projectName;
-    noOfMembers = project.noOfMembers;
-    memberNameList = new String [project.noOfMembers];
-
-    for (int n = 0; n < project.noOfMembers; n++)
-    {
-      memberNameList[n] = project.memberNameList[n];
-    }
+    setProjectName(project.projectName);
+    setNoOfMembers(project.noOfMembers);
+    setMemberNameList(project.memberNameList);
 
     if (project.votesList == null)
     {
@@ -75,39 +53,68 @@
     }
     else
     {
-      votesList = new Votes(project.votesList);
+      setVotes(project.votesList);
     }
   }
 
   //-------------------------------------------------
   // Set project name to the value of a valid input.
   //-------------------------------------------------
-  public void setProjectName(String theProjectName)
+  public void setProjectName(String aProjectName)
   {
-    projectName = theProjectName;
-  }
-
-  //---------------------------------------------------------------
-  // Set the number of team members to the value of a valid input.
-  //---------------------------------------------------------------
-  public void setNoOfMembers(int theNoOfMembers)
-  {
-    noOfMembers = theNoOfMembers;
-  }
-
-  //-----------------------------------------------------
-  // Set the names of members to values of valid inputs.
-  //-----------------------------------------------------
-  public void setMemberNameList(String [] list)
-  {
-    memberNameList = list;
-  }
-
-  public void setVotes(Votes theVotes)
-  {
-    if (theVotes.getVotesLists().length == noOfMembers)
+    if (Controller.validateName(aProjectName))
     {
-      votesList = new Votes(theVotes);
+      projectName = aProjectName;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
+  }
+
+  public void setNoOfMembers(int aNumber)
+  {
+    if (Controller.validateNoOfMembers(aNumber))
+    {
+      noOfMembers = aNumber;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
+  }
+  
+  public void setMemberNameList(String[] aNameList)
+  {
+    if (aNameList.length == noOfMembers)
+    {
+      if (Controller.validateNameList(noOfMembers, aNameList))
+      {
+        memberNameList = aNameList;
+      }   
+      else
+      {
+        Controller.fatalError("Invalid argument passed to the constructor.");
+      }
+    }
+    else
+    {
+      Controller.fatalError("Name lists and project do not match.");
+    }
+  }
+  
+  public void setVotes(Votes aVotes)
+  {
+    if (aVotes.getVotesLists().length == noOfMembers)
+    {
+      if (Controller.validateVoteList(noOfMembers, aVotes))
+      {
+        votesList = new Votes(aVotes);
+      }   
+      else
+      {
+        Controller.fatalError("Invalid argument passed to the constructor.");
+      }
     }
     else
     {
@@ -120,7 +127,7 @@
     return projectName;
   }
 
-  public int getMemberNo()
+  public int getNoOfMembers()
   {
     return noOfMembers;
   }
@@ -148,7 +155,7 @@
 
   public String toString()
   {
-    String output1 = getProjectName() + "," + getMemberNo();
+    String output1 = getProjectName() + "," + getNoOfMembers();
     String output2 = "";
     String output3 = "";
 

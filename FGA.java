@@ -89,7 +89,7 @@ public class FGA
     return option;
   }
 
-  private static void about()
+  public static void about()
   {
     System.out.println("\n\t ------------------------------------- \n"+
                          "\t|      About                          |\n"+
@@ -179,11 +179,11 @@ public class FGA
     theVotes.setProjectPosition(position);
     Project projectWanted = allProjectList.getProject(position);
 
-    System.out.println("\tThere are " + projectWanted.getMemberNo()
+    System.out.println("\tThere are " + projectWanted.getNoOfMembers()
                          + " team members.\n");
 
     // Enter votes in the 2-d array.
-    int countMember = projectWanted.getMemberNo();
+    int countMember = projectWanted.getNoOfMembers();
     votesLists = new int[countMember][countMember];
 
     for (int a = 0; a < countMember; a++)
@@ -228,7 +228,7 @@ public class FGA
   // ----------------
   // Show Project
   // ----------------
-  private void showProject()
+  public void showProject()
   {
     boolean projectWithThreeMembersAndVotesExist = false;
     int count = allProjectList.getCount();
@@ -237,7 +237,7 @@ public class FGA
     {
       for(int n = 0; n < count; n++)
       {
-        if (allProjectList.getProject(n).getMemberNo() == 3 &&
+        if (allProjectList.getProject(n).getNoOfMembers() == 3 &&
             allProjectList.getProject(n).getVotesList() != null)
         {
           projectWithThreeMembersAndVotesExist = true;
@@ -250,44 +250,37 @@ public class FGA
         int position = getProjectPositionWithPrompt("Enter the project name: ");
         Project projectWanted = allProjectList.getProject(position);
         
-        if (projectWanted.getMemberNo() == 3)
+        if (projectWanted.getNoOfMembers() == 3 &&
+            projectWanted.getVotesList() != null)
         {
           Votes votes = projectWanted.getVotesList();
           votesWanted = votes.getVotesLists();
-        
-          if (votesWanted != null)
-          {
-            double[][] ratio = new double[3][3];
-            ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
-            ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
-            ratio[1][0] = votesWanted[1][0]/(double)votesWanted[1][2];
-            ratio[1][2] = votesWanted[1][2]/(double)votesWanted[1][0];
-            ratio[2][0] = votesWanted[2][0]/(double)votesWanted[2][1];
-            ratio[2][1] = votesWanted[2][1]/(double)votesWanted[2][0];
+                 
+          double[][] ratio = new double[3][3];
+          ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
+          ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
+          ratio[1][0] = votesWanted[1][0]/(double)votesWanted[1][2];
+          ratio[1][2] = votesWanted[1][2]/(double)votesWanted[1][0];
+          ratio[2][0] = votesWanted[2][0]/(double)votesWanted[2][1];
+          ratio[2][1] = votesWanted[2][1]/(double)votesWanted[2][0];
 
-            double[] share = new double[3];
-            share[0] = 1/(1+ratio[1][2]+ratio[2][1]);
-            share[1] = 1/(1+ratio[0][2]+ratio[2][0]);
-            share[2] = 1/(1+ratio[0][1]+ratio[1][0]);
+          double[] share = new double[3];
+          share[0] = 1/(1+ratio[1][2]+ratio[2][1]);
+          share[1] = 1/(1+ratio[0][2]+ratio[2][0]);
+          share[2] = 1/(1+ratio[0][1]+ratio[1][0]);
 
-            System.out.println("\tThere are 3 team members.");
-            System.out.println("\n\tThe point allocation based on votes is: \n");
+          System.out.println("\tThere are 3 team members.");
+          System.out.println("\n\tThe point allocation based on votes is: \n");
           
-            for(int n = 0; n < 3; n++)
-            {
-              System.out.println("\t\t" + projectWanted.getMemberName(n) +
-                                 ":\t" + (int)(share[n]*100));
-            }
-          }
-          else
+          for(int n = 0; n < 3; n++)
           {
-            System.out.println("\n\tNo votes have been entered for this project."+
-                               "\n\tEnter votes first to view points allocation.");
-          }
+            System.out.println("\t\t" + projectWanted.getMemberName(n) +
+                               ":\t" + (int)(share[n]*100));
+          }          
         }
         else
         {
-          System.out.println("\n\tThe project doesn't have 3 members.");
+          System.out.println("\n\tThe project doesn't have 3 members or votes don't exist.");
         }
       }
       else
@@ -303,7 +296,10 @@ public class FGA
     }
   }
 
-  private void deleteProject()
+  //-------------------
+  // Delete a project.
+  // -------------------
+  public void deleteProject()
   {
     int count = allProjectList.getCount();
     if (count != 0)
@@ -395,13 +391,13 @@ public class FGA
           output2 = " Votes exist.";
         }
         output1 += "\t" +existingProject.getProjectName() + "; "
-                        + existingProject.getMemberNo() +" members; " + output2 + "\n";
+                        + existingProject.getNoOfMembers() +" members; " + output2 + "\n";
       }
       return output1;
     }
   }
 
-  public boolean projectExist(String aName)
+  private boolean projectExist(String aName)
   {
     boolean exist = false;
     Project existingProject = new Project();
@@ -415,8 +411,6 @@ public class FGA
         exist = true;
       }
     }
-
     return exist;
   }
-
 }
