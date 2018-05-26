@@ -1,9 +1,9 @@
- public class Project
+public class Project
 {
   private String projectName;
   private int noOfMembers;
   private String[] memberNameList;
-  private int[][] memberVoteList;
+  private Votes votesList;
 
   //---------------------------------------------------------------------
   // This constructor creates a default CreateProject object when the
@@ -14,7 +14,7 @@
     projectName = "";
     noOfMembers = 0;
     memberNameList = null;
-    memberVoteList = null;
+    votesList = null;
   }
 
   //--------------------------------------------------------------------------
@@ -22,21 +22,20 @@
   // number of members, name of members accordingly; setting the values of
   // votes to default, to be inputted later.
   // -------------------------------------------------------------------------
-  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, int[][] theMemberVoteList)
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList, Votes theVotes)
   {
-    if (Controller.validateName(theProjectName) && Controller.validateNoOfMembers(theNoOfMembers) &&
-        Controller.validateNameList(theNoOfMembers, theMemberNameList) &&
-        Controller.validateVoteList(theNoOfMembers, theMemberVoteList))
-    {
-      projectName = theProjectName;
-      noOfMembers = theNoOfMembers;
-      memberNameList = theMemberNameList;
-      memberVoteList = theMemberVoteList;
-    }
-    else
-    {
-      Controller.fatalError("Invalid argument passed to the constructor.");
-    }
+    setProjectName(theProjectName);
+    setNoOfMembers(theNoOfMembers);
+    setMemberNameList(theMemberNameList);
+    setVotes(theVotes);
+  }
+
+  public Project(String theProjectName, int theNoOfMembers, String[] theMemberNameList)
+  {
+    setProjectName(theProjectName);
+    setNoOfMembers(theNoOfMembers);
+    setMemberNameList(theMemberNameList);
+    votesList = null;
   }
 
   //-------------------
@@ -44,72 +43,82 @@
   // ------------------
   public Project(Project project)
   {
-    projectName = project.projectName;
-    noOfMembers = project.noOfMembers;
-    memberNameList = new String [project.noOfMembers];
+    setProjectName(project.projectName);
+    setNoOfMembers(project.noOfMembers);
+    setMemberNameList(project.memberNameList);
 
-    for (int n = 0; n < project.noOfMembers; n++)
+    if (project.votesList == null)
     {
-      memberNameList[n] = project.memberNameList[n];
-    }
-
-    if (project.memberVoteList == null)
-    {
-      memberVoteList = null;
+      votesList = null;
     }
     else
     {
-      memberVoteList = new int [project.noOfMembers][project.noOfMembers];
-      for (int n = 0; n < project.noOfMembers; n++)
-      {
-        for (int m = 0; m < project.noOfMembers; m++)
-        {
-          memberVoteList [n][m] = project.memberVoteList[n][m];
-        }
-      }
+      setVotes(project.votesList);
     }
   }
 
   //-------------------------------------------------
   // Set project name to the value of a valid input.
   //-------------------------------------------------
-  public void setProjectName(String theProjectName)
+  public void setProjectName(String aProjectName)
   {
-    projectName = theProjectName;
-  }
-
-  //---------------------------------------------------------------
-  // Set the number of team members to the value of a valid input.
-  //---------------------------------------------------------------
-  public void setNoOfMembers(int theNoOfMembers)
-  {
-    noOfMembers = theNoOfMembers;
-  }
-
-  //-----------------------------------------------------
-  // Set the names of members to values of valid inputs.
-  //-----------------------------------------------------
-  public void setMemberNameList(String [] list)
-  {
-    memberNameList = list;
-  }
-
-  public void setVotes(int[][] voteList)
-  {
-    if (voteList!=null)
+    if (Controller.validateName(aProjectName))
     {
-      if (voteList.length == noOfMembers)
+      projectName = aProjectName;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
+  }
+
+  public void setNoOfMembers(int aNumber)
+  {
+    if (Controller.validateNoOfMembers(aNumber))
+    {
+      noOfMembers = aNumber;
+    }
+    else
+    {
+      Controller.fatalError("Invalid argument passed to the constructor.");
+    }
+  }
+  
+  public void setMemberNameList(String[] aNameList)
+  {
+    if (aNameList.length == noOfMembers)
+    {
+      if (Controller.validateNameList(noOfMembers, aNameList))
       {
-        memberVoteList = voteList;
-      }
+        memberNameList = aNameList;
+      }   
       else
       {
-        Controller.fatalError("Votes and project do not match.");
+        Controller.fatalError("Invalid argument passed to the constructor.");
       }
     }
     else
     {
-      memberVoteList = null;
+      Controller.fatalError("Name lists and project do not match.");
+    }
+  }
+  
+  public void setVotes(Votes aVotes)
+  {
+    if (aVotes.getVotesLists().length == noOfMembers)
+    {
+      if (Controller.validateVoteList(noOfMembers, aVotes))
+      {
+        votesList = new Votes(aVotes);
+      }   
+      else
+      {
+        Controller.fatalError("Invalid argument passed to the constructor.");
+      }
+    }
+    else
+    {
+      Controller.fatalError("Votes and project do not match.");
     }
   }
 
@@ -118,7 +127,7 @@
     return projectName;
   }
 
-  public int getMemberNo()
+  public int getNoOfMembers()
   {
     return noOfMembers;
   }
@@ -139,31 +148,14 @@
     }
   }
 
-  public int[][] getMemberVotesList()
+  public Votes getVotesList()
   {
-     return memberVoteList;
-  }
-
-  // ------------------------------------------------------------------------
-  // Returns the value of the nth person's vote for the mth person if valid.
-  // ------------------------------------------------------------------------
-  public int getMemberVote(int n, int m)
-  {
-    final int ERROR = 0;
-    if (n >= 0 && m >= 0 && n< noOfMembers && m< noOfMembers && n!=m)
-    {
-      return memberVoteList[n][m];
-    }
-    else
-    {
-      Controller.fatalError("Invalid number passed to the argument.");
-      return ERROR;
-    }
+     return votesList;
   }
 
   public String toString()
   {
-    String output1 = getProjectName() + "," + getMemberNo();
+    String output1 = getProjectName() + "," + getNoOfMembers();
     String output2 = "";
     String output3 = "";
 
@@ -172,7 +164,7 @@
       output2 += "," + getMemberName(n);
     }
 
-    if (memberVoteList != null)
+    if (votesList != null)
     {
       for (int n = 0; n<noOfMembers; n++)
       {
@@ -189,7 +181,7 @@
     {
       if (m != n)
       {
-        vote += "," + getMemberName(m) + "," + memberVoteList[n][m];
+        vote += "," + getMemberName(m) + "," + votesList.getMemberVote(n, m);
       }
     }
 

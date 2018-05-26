@@ -1,58 +1,75 @@
 import java.util.Scanner;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class FGA
 {
-  public static final int MAX_PROJECTS = 100;
-  private static final String fileName = "data.txt";
-  private static Project [] projectList;
-  private static int count;
+  public AllProject allProjectList;
 
   public FGA()
   {
-    projectList = new Project [MAX_PROJECTS];
-    count = 0;
+    allProjectList = new AllProject(0);
   }
 
   public static void main(String[] args)
   {
     FGA theFGA = new FGA();
-    //Read the file
-    File fileObject = new File(fileName);
-    if (fileObject.exists( ))
+    FileController.inputFile();
+    
+    char option = '*';        
+    while (option != 'q')
     {
-      readFile();
-    }
-    theFGA.mainMenu();
-    PrintWriter outputStream = null;
-    try
-    {
-        outputStream
-              = new PrintWriter(new FileOutputStream(fileName));
-    }
-    catch (FileNotFoundException e)
-    {
-        System.out.println("Error opening the file " + fileName);
-        System.exit(0);
+      option = mainMenu(); 
+      switch (option)
+      {
+        case 'a':
+          about();
+          pressKey();
+          break;
+
+        case 'c':
+          theFGA.allProjectList.addProject(theFGA.createProject());
+          theFGA.allProjectList.addCount();
+          pressKey();
+          break;
+
+        case 'd':
+          theFGA.deleteProject();
+          pressKey();
+          break;
+
+        case 'v':
+          if (theFGA.allProjectList.getCount()!=0)
+          {
+            Votes votes = new Votes(theFGA.enterVotes());
+            
+            //Add the votes to the specific project stored in AllProject 
+            int position = votes.getProjectPosition();
+            theFGA.allProjectList.setVotesInAllProject(position, votes);
+          }
+          else
+          {
+            System.out.println("\n\tNo project was created." +
+                               "\n\tPlease create projects first.");
+          }
+          pressKey();
+          break;
+
+        case 's':
+          theFGA.showProject();
+          pressKey();
+          break;
+      }
     }
 
-    outputStream.print(theFGA.toString());
-    outputStream.close();
-
-    System.out.println("\tText written to \"data.txt\".");
-
+    FileController.outputFile();
     System.out.println("\tPROGRAM ENDED\n");
   }
 
-  public void mainMenu()
+  private static char mainMenu()
   {
     Scanner scan = new Scanner(System.in);
     String optionInput;
     char option;
+    
     menuPanel();
     do
     {
@@ -66,52 +83,10 @@ public class FGA
       {
         System.out.println("\tUnknown option, please try again:");
       }
-
     } while (!Controller.validOption(optionInput));
 
     option = optionInput.charAt(0);
-
-    switch (option)
-    {
-      case 'a':
-        about();
-        backToMenu();
-        break;
-
-      case 'c':
-        projectList[count] = createProject();
-        count += 1;
-        backToMenu();
-        break;
-
-      case 'd':
-        deleteProject();
-        count -= 1;
-        backToMenu();
-        break;
-
-      case 'v':
-        Votes votes = enterVotes();
-        try
-        {
-          projectList[votes.getProjectPosition()].setVotes(votes.getVotesLists());
-        }
-        catch (NullPointerException e)
-        {
-          System.out.println("\n\tNo project was created." +
-                             "\n\tPlease create projects first.");
-        }
-        backToMenu();
-        break;
-
-      case 's':
-        showProject();
-        backToMenu();
-        break;
-
-      case 'q':
-        break;
-    }
+    return option;
   }
 
   public static void about()
@@ -127,7 +102,7 @@ public class FGA
                          "\t ------------------------------------- \n");
   }
 
-  public static void menuPanel()
+  private static void menuPanel()
   {
     System.out.println("\n\t ------------------------------------- \n"+
                          "\t|  Welcome to Split-it                |\n"+
@@ -140,8 +115,8 @@ public class FGA
                          "\t|  Quit (Q)                           |\n"+
                          "\t ------------------------------------- \n");
   }
-
-  public void backToMenu()
+  
+  private static void pressKey()
   {
     Scanner scan = new Scanner(System.in);
     String option;
@@ -150,9 +125,8 @@ public class FGA
                               // This allows the user to press "return" to go back to
                               // main menu as well as any other keys.
                               //------------------------------------------------------
-    mainMenu();
   }
-
+  
   public Project createProject()
   {
     String projectName;
@@ -191,8 +165,7 @@ public class FGA
           }
         }
       }
-      int[][] nullList = null;
-      theProject = new Project(projectName, noOfMembers, list, nullList);
+      theProject = new Project(projectName, noOfMembers, list);
       return theProject;
   }
 
@@ -200,71 +173,72 @@ public class FGA
   {
     Votes theVotes = new Votes();
     int [][] votesLists = null;
-    if (count !=0) // Avoid entering votes when no project existed.
+    int count =  allProjectList.getCount();
+    int position = getProjectPositionWithPrompt("Enter the project name you want to enter votes: ");
+    
+    theVotes.setProjectPosition(position);
+    Project projectWanted = allProjectList.getProject(position);
+
+    System.out.println("\tThere are " + projectWanted.getNoOfMembers()
+                         + " team members.\n");
+
+    // Enter votes in the 2-d array.
+    int countMember = projectWanted.getNoOfMembers();
+    votesLists = new int[countMember][countMember];
+
+    for (int a = 0; a < countMember; a++)
     {
-      int position = getProjectPositionWithPrompt("Enter the project name: ");
-      theVotes.setProjectNo(position);
-      Project projectWanted = projectList[position];
+      System.out.println("\tEnter " + projectWanted.getMemberName(a)
+                         + "’s votes, points must add up to 100: \n");
 
-      System.out.println("\tThere are " + projectWanted.getMemberNo()
-                           + " team members.\n");
-
-      // Enter votes in the 2-d array.
-      int countMember = projectWanted.getMemberNo();
-      votesLists = new int[countMember][countMember];
-
-      for (int a = 0; a < countMember; a++)
+      do
       {
-        System.out.println("\tEnter " + projectWanted.getMemberName(a)
-                           + "’s votes, points must add up to 100: \n");
-
-        do
+        for (int b = 0; b < countMember; b++)
         {
-          for (int b = 0; b < countMember; b++)
+          if (b == a)
           {
-            if (b == a)
+            votesLists[a][b] = 0;
+          }
+          else
+          {
+            do
             {
-              votesLists[a][b] = 0;
-            }
-            else
-            {
-              do
+              votesLists[a][b] = Controller.inputNumberWithPrompt("\t\tEnter " + projectWanted.getMemberName(a)
+                                                            + "’s points for " + projectWanted.getMemberName(b)
+                                                            + ":\t");
+              if (!Controller.votesValid(votesLists[a][b]))
               {
-                votesLists[a][b] = Controller.inputNumberWithPrompt("\t\tEnter " + projectWanted.getMemberName(a)
-                                                              + "’s points for " + projectWanted.getMemberName(b)
-                                                              + ":\t");
-                if (!Controller.votesValid(votesLists[a][b]))
-                {
-                  System.out.println("\n\t\tThe points of a vote must be between 0 and 100 inclusive.\n");
-                }
-              } while (!Controller.votesValid(votesLists[a][b]));
-            }
+                System.out.println("\n\t\tThe points of a vote must be between 0 and 100 inclusive.\n");
+              }
+            } while (!Controller.votesValid(votesLists[a][b]));
           }
+        }
 
-          if (!Controller.votesHundred(votesLists[a]))
-          {
-            System.out.println("\n\tVotes do not add up to 100.\n"+
-                               "\n\tEnter Again.");
-          }
-        } while (!Controller.votesHundred(votesLists[a]));
-      }
-      theVotes.setVotesLists(votesLists);
+        if (!Controller.votesHundred(votesLists[a]))
+        {
+          System.out.println("\n\tVotes do not add up to 100.\n"+
+                             "\n\tEnter Again.");
+        }
+      } while (!Controller.votesHundred(votesLists[a]));
     }
+    theVotes.setVotesLists(votesLists);
     return theVotes;
   }
 
   // ----------------
   // Show Project
   // ----------------
-  private void showProject()
+  public void showProject()
   {
     boolean projectWithThreeMembersAndVotesExist = false;
+    int count = allProjectList.getCount();
+
     if (count != 0)
     {
       for(int n = 0; n < count; n++)
       {
-        if (projectList[n].getMemberNo() == 3 &&
-            projectList[n].getMemberVotesList() != null)
+        if (allProjectList.getProject(n).getNoOfMembers() == 3 &&
+            allProjectList.getProject(n).getVotesList() != null)
         {
           projectWithThreeMembersAndVotesExist = true;
         }
@@ -274,10 +248,14 @@ public class FGA
       {
         int[][] votesWanted;
         int position = getProjectPositionWithPrompt("Enter the project name: ");
-        Project projectWanted = projectList[position];
-        votesWanted = projectWanted.getMemberVotesList();
-        if (votesWanted!=null)
+        Project projectWanted = allProjectList.getProject(position);
+        
+        if (projectWanted.getNoOfMembers() == 3 &&
+            projectWanted.getVotesList() != null)
         {
+          Votes votes = projectWanted.getVotesList();
+          votesWanted = votes.getVotesLists();
+                 
           double[][] ratio = new double[3][3];
           ratio[0][1] = votesWanted[0][1]/(double)votesWanted[0][2];
           ratio[0][2] = votesWanted[0][2]/(double)votesWanted[0][1];
@@ -293,18 +271,17 @@ public class FGA
 
           System.out.println("\tThere are 3 team members.");
           System.out.println("\n\tThe point allocation based on votes is: \n");
+          
           for(int n = 0; n < 3; n++)
           {
             System.out.println("\t\t" + projectWanted.getMemberName(n) +
                                ":\t" + (int)(share[n]*100));
-          }
+          }          
         }
         else
         {
-          System.out.println("\n\tNo votes have been entered for this project."+
-                             "\n\tEnter votes first to view points allocation.");
+          System.out.println("\n\tThe project doesn't have 3 members or votes don't exist.");
         }
-
       }
       else
       {
@@ -317,25 +294,32 @@ public class FGA
       System.out.println("\n\tNo project was created." +
                          "\n\tPlease create projects first.");
     }
-
   }
 
-  private void deleteProject()
+  //-------------------
+  // Delete a project.
+  // -------------------
+  public void deleteProject()
   {
-    if (count !=0)
+    int count = allProjectList.getCount();
+    if (count != 0)
     {
       int position = getProjectPositionWithPrompt("Enter the name of the project you want to delete: ");
-      projectList[position] = null;
-
+      String theName = allProjectList.getProject(position).getProjectName();
+      allProjectList.setProject(position,null);
+                               
       //move projects forward to fill the blank
       if (count > 1 && (position != count - 1))
       {
         for(int x = 0; x < (count - position -1); x++)
         {
-          projectList[position - 1] =  projectList[position];
+          allProjectList.setProject(position + x, allProjectList.getProject(position + x + 1));
         }
-        projectList[count - position] = null;
+        allProjectList.setProject(count, null);
       }
+      
+      allProjectList.reduceCount(); 
+      System.out.println("\n\tProject \"" + theName + "\" is deleted.");     
     }
     else
     {
@@ -344,110 +328,10 @@ public class FGA
     }
   }
 
-  // ------------------------------------
-  // Read the files
-  // ------------------------------------
-  private static void readFile()
-  {
-    Scanner inputStream = null;
-
-    try
-    {
-       inputStream = new Scanner(new FileInputStream(fileName));
-    }
-    catch(FileNotFoundException e)
-    {
-       System.out.println("File: " + fileName + " was not found");
-       System.out.println("or could not be opened.");
-       System.exit(0);
-    }
-
-    String projectNameFromFile = null;
-    int noOfMemberFromFile = 0;
-    String[] memberNameListFromFile = null;
-    int[][] memberVoteListFromFile = null;
-    String line = null;
-    while (inputStream.hasNextLine())
-    {
-      line = inputStream.nextLine();
-      String[] text = line.split(",");
-
-      projectNameFromFile = text[0];
-      try
-      {
-        noOfMemberFromFile = Integer.parseInt(text[1]);
-      }
-      catch (NumberFormatException e)
-      {
-        Controller.fatalError("File is not in the right format.");
-      }
-
-      if (!(text.length == (2+2*noOfMemberFromFile*noOfMemberFromFile) || text.length ==2+noOfMemberFromFile))
-      {
-        Controller.fatalError("File is not in the right format.");
-      }
-
-      //member names
-      memberNameListFromFile = new String[noOfMemberFromFile];
-      for(int n = 0; n < noOfMemberFromFile; n++)
-      {
-        memberNameListFromFile[n] = text[n+2];
-      }
-
-      //votes
-      if (text.length > noOfMemberFromFile + 2)
-      {
-        memberVoteListFromFile = new int[noOfMemberFromFile][noOfMemberFromFile];
-        for(int x = 0; x < noOfMemberFromFile; x++)
-        {
-          for(int y = 0; y < noOfMemberFromFile - 1; y++)
-          {
-            int position = 2 + noOfMemberFromFile + x * (2 * noOfMemberFromFile - 1) + 2 * y + 3 - 1;
-            if (x==y)
-            {
-              memberVoteListFromFile[x][y]=0;
-            }
-            if (x > y)
-            {
-              try
-              {
-                memberVoteListFromFile[x][y] = Integer.parseInt(text[position]);
-              }
-              catch (NumberFormatException e)
-              {
-                Controller.fatalError("File is not in the right format.");
-              }
-            }
-            else
-            {
-              try
-              {
-                memberVoteListFromFile[x][y+1] = Integer.parseInt(text[position]);
-              }
-              catch (NumberFormatException e)
-              {
-                Controller.fatalError("File is not in the right format.");
-              }
-            }
-          }
-        }
-      }
-      else
-      {
-        memberVoteListFromFile = null;
-      }
-
-      projectList[count] = new Project(projectNameFromFile, noOfMemberFromFile,
-                                       memberNameListFromFile, memberVoteListFromFile);
-      count += 1;
-    }
-
-    inputStream.close( );
-  }
-
   private int getProjectPositionWithPrompt(String aPrompt)
   {
-    if (count==0)
+    int count = allProjectList.getCount();
+    if (count == 0)
     {
       return 0;
     }
@@ -471,7 +355,7 @@ public class FGA
 
       for (int n = 0; n < count; n++)
       {
-        Project existingProject = projectList[n];
+        Project existingProject = allProjectList.getProject(n);
         if (projectWanted.equals(existingProject))
         {
           position = n;
@@ -481,12 +365,13 @@ public class FGA
     }
   }
 
-  // ------------------------------------
-  // Returns all existing project names.
-  // ------------------------------------
+  // ------------------------------------------------------------------------------
+  // Returns all existing project names, number of members and existence of votes.
+  // ------------------------------------------------------------------------------
   private String toStringProjectsBrief()
   {
-    if (count==0)
+    int count = allProjectList.getCount();
+    if (count == 0)
     {
       return("\n\tNo project was created.");
     }
@@ -494,10 +379,10 @@ public class FGA
     {
       String output1 = "\n\tExisting project(s) and details: \n";
       String output2 = "";
-      for (int n=0; n < count; n++)
+      for (int n = 0; n < count; n++)
       {
-        Project existingProject = projectList[n];
-        if ((existingProject.getMemberVotesList()) == null)
+        Project existingProject = allProjectList.getProject(n);
+        if ((existingProject.getVotesList()) == null)
         {
           output2 = " No votes.";
         }
@@ -506,43 +391,26 @@ public class FGA
           output2 = " Votes exist.";
         }
         output1 += "\t" +existingProject.getProjectName() + "; "
-                        + existingProject.getMemberNo() +" members; " + output2 + "\n";
+                        + existingProject.getNoOfMembers() +" members; " + output2 + "\n";
       }
       return output1;
     }
   }
 
-  public boolean projectExist(String aName)
+  private boolean projectExist(String aName)
   {
     boolean exist = false;
     Project existingProject = new Project();
+    int count = allProjectList.getCount();
 
     for (int n = 0; n < count; n++)
     {
-      existingProject = projectList[n];
+      existingProject = allProjectList.getProject(n);
       if (aName.equalsIgnoreCase(existingProject.getProjectName()))
       {
         exist = true;
       }
     }
-
     return exist;
   }
-
-  public String toString()
-  {
-    String output = "";
-
-    Project project = new Project();
-
-    for (int n = 0; n < count; n++)
-    {
-      project = projectList[n];
-      output += (project.toString());
-      if(n < count - 1)
-        output += "\n";
-    }
-    return (output);
-  }
-
 }

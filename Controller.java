@@ -16,7 +16,7 @@ public class Controller
   {
     return ((input.equals("a")) || (input.equals("c")) ||
             (input.equals("v")) || (input.equals("s")) ||
-            (input.equals("q")) || (input.equals("d")) || (input.equals("x")));
+            (input.equals("q")) || (input.equals("d")) );
   }
 
   // ------------------------------------
@@ -59,24 +59,26 @@ public class Controller
     }
   }
 
-  //--------------------------------------------------
-  // Validate the names to alphanumerical characters
-  // and of length within a sensible range.
-  //--------------------------------------------------
+  //----------------------------------------------------------------
+  // Validate the names to alphanumerical characters and of length 
+  // within a sensible range.
+  //----------------------------------------------------------------
   public static boolean validateName(String name)
   {
-    boolean valid = true;
-    if (name.length()<MINNAMELENGTH || name.length()>MAXNAMELENGTH)
+    if (name.length() < MINNAMELENGTH || name.length() > MAXNAMELENGTH)
     {
-      valid = false;
+      return false;
     }
-    for (int i = 0; i <name.length(); i++)
+    
+    for (int i = 0; i < name.length(); i++)
     {
       if (!Character.isLetterOrDigit(name.charAt(i)))
-        valid = false;
+      {
+        return false;
+      }
     }
-
-    return valid;
+    
+    return true;
   }
 
   //--------------------------------------
@@ -84,81 +86,101 @@ public class Controller
   //--------------------------------------
   public static boolean validateNoOfMembers(int n)
   {
-    boolean valid = false;
-    if (n>=MIN_MEMBERS && n<=MAX_MEMBERS)
-    {
-      valid = true;
-    }
-    return valid;
+    return (n >= MIN_MEMBERS && n <= MAX_MEMBERS);
   }
-
-  //---------------------------------------
-  // Validate the list of names of members
-  // with corresponding number of members.
-  //---------------------------------------
+   
+  //-----------------------------------------------------------------------------
+  // Validate the list of names of members with corresponding number of members.
+  //-----------------------------------------------------------------------------
   public static boolean validateNameList(int noOfMembers, String [] memberNameList)
   {
-    boolean valid = true;
+    boolean valid = false;
     if (!validateNoOfMembers(noOfMembers))
     {
       fatalError("Invalid number of members passed as argument.");
     }
-    if (memberNameList==null)
+    
+    if (memberNameList == null)
     {
-      valid = false;
+      return false;
     }
 
     if (noOfMembers==memberNameList.length)
     {
-      for (int n=0; n < noOfMembers; n++)
+      for (int n = 0; n < noOfMembers; n++)
       {
         valid = validateName(memberNameList[n]);
+        if (valid == false)
+        {
+          return valid;
+        }
       }
     }
     else
     {
-      valid = false;
+      return false;
     }
+    
     return valid;
-
   }
 
-  //-----------------------------------------------
-  // Validate the list of votes with corresponding
-  // number of members.
-  //-----------------------------------------------
-  public static boolean validateVoteList(int noOfMembers, int [][] votesList)
+  //--------------------------------------
+  // Validate project position in Allproject.
+  //--------------------------------------
+  public static boolean validatePosition(int n)
   {
-    boolean valid = true;
-    if (!validateNoOfMembers(noOfMembers))
+    AllProject allProjectList = new AllProject();
+    return (n <= allProjectList.getCount());
+  }
+  
+  //-----------------------------
+  // Validate the list of votes
+  //-----------------------------
+  public static boolean validateVoteList(int[][] aList)
+  {
+    boolean valid = false;
+    
+    for (int n = 0; n < aList.length; n++)
     {
-      fatalError("Invalid number of members passed as argument.");
-    }
-    if (votesList!=null)
-    {
-      if (noOfMembers == votesList.length)
+      for (int m = 0; m < aList[n].length; m++)
       {
-        for (int n=0; n < noOfMembers; n++)
+        valid = votesValid(aList[n][m]);
+        if (valid == false)
         {
-          if (noOfMembers == votesList[n].length)
-          {
-            for (int m=0; m < noOfMembers; m++)
-            {
-              valid = votesValid(votesList[n][m]);
-            }
-            valid = votesHundred(votesList[n]);
-          }
-          else
-          {
-            valid = false;
-          }
+          return valid;
         }
+        
+        if (n == m)
+        {
+          valid = (aList[n][m] == 0);
+          if (valid == false)
+          {
+            return valid;
+          }
+        }            
       }
-      else
+      valid = votesHundred(aList[n]);
+      if (valid == false)
       {
-        valid = false;
+        return valid;
       }
+    }    
+    return valid;
+  }
+  
+  //------------------------------------------------------------------
+  // Validate the list of votes with corresponding number of members.
+  //------------------------------------------------------------------
+  public static boolean validateVoteList(int noOfMembers, Votes theVotes)
+  {
+    boolean valid = false;
+    int [][] votesList = theVotes.getVotesLists();
+      
+    if (noOfMembers == votesList.length)
+    {
+      valid = validateVoteList(votesList);
     }
+
     return valid;
   }
 
@@ -176,7 +198,6 @@ public class Controller
   public static boolean votesHundred(int[] inputList)
   {
     int votesTotal = 0;
-
     for (int n = 0; n < inputList.length; n++)
     {
       votesTotal += inputList[n];
@@ -184,7 +205,6 @@ public class Controller
 
     return (votesTotal == 100);
   }
-
 
   // -------------------------------------------------------------
   // from Project.java in Deliverable 1: Feedback and Feedforward
@@ -194,5 +214,4 @@ public class Controller
     System.out.println("Fatal error: "+ errorMessage);
     System.exit(0);
   }
-
 }
